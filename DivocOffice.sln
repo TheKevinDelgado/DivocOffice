@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DivocOutlook", "DivocOutlook\DivocOutlook.csproj", "{DF7D8A6A-41D8-433C-917D-F4C444A82D16}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DivocWord", "DivocWord\DivocWord.csproj", "{FA5E33E4-26DF-4DE0-AFE1-7B6610086B30}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DivocExcel", "DivocExcel\DivocExcel.csproj", "{2CE1D0DC-E819-46FC-8750-0577ADA551F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DivocPowerPoint", "DivocPowerPoint\DivocPowerPoint.csproj", "{0516ED93-B192-42B9-9D99-F95B3018C4B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DivocCommon", "DivocCommon\DivocCommon.csproj", "{493165F8-1B41-4B57-99DD-D52B69B82009}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestShell", "TestShell\TestShell.csproj", "{1AAB3967-7270-4DB7-A331-BA52AEFA3091}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DF7D8A6A-41D8-433C-917D-F4C444A82D16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF7D8A6A-41D8-433C-917D-F4C444A82D16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF7D8A6A-41D8-433C-917D-F4C444A82D16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF7D8A6A-41D8-433C-917D-F4C444A82D16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA5E33E4-26DF-4DE0-AFE1-7B6610086B30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA5E33E4-26DF-4DE0-AFE1-7B6610086B30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA5E33E4-26DF-4DE0-AFE1-7B6610086B30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA5E33E4-26DF-4DE0-AFE1-7B6610086B30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CE1D0DC-E819-46FC-8750-0577ADA551F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CE1D0DC-E819-46FC-8750-0577ADA551F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CE1D0DC-E819-46FC-8750-0577ADA551F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CE1D0DC-E819-46FC-8750-0577ADA551F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0516ED93-B192-42B9-9D99-F95B3018C4B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0516ED93-B192-42B9-9D99-F95B3018C4B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0516ED93-B192-42B9-9D99-F95B3018C4B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0516ED93-B192-42B9-9D99-F95B3018C4B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{493165F8-1B41-4B57-99DD-D52B69B82009}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{493165F8-1B41-4B57-99DD-D52B69B82009}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{493165F8-1B41-4B57-99DD-D52B69B82009}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{493165F8-1B41-4B57-99DD-D52B69B82009}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AAB3967-7270-4DB7-A331-BA52AEFA3091}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AAB3967-7270-4DB7-A331-BA52AEFA3091}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AAB3967-7270-4DB7-A331-BA52AEFA3091}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AAB3967-7270-4DB7-A331-BA52AEFA3091}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2F7A5F4D-971A-4248-9B25-E88FB4349DA5}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui" onLoad="Ribbon_Load">
+  <ribbon>
+    <tabs>
+      <tab idMso="TabMail">
+        <group id="DivocGroup" getLabel="OnGetLabel" insertAfterMso="GroupMailRespond">
+          <button id="SaveMail" size="large" getLabel="OnGetLabel" onAction="OnAction" getEnabled="OnGetEnabled" getImage="OnGetImage" getSupertip="OnGetSuperTip"/>
+          <button id="SaveAttachments" size="large" getLabel="OnGetLabel" onAction="OnAction" getImage="OnGetImage" getEnabled="OnGetEnabled"/>
+          <dialogBoxLauncher>
+            <button id="SettingsLauncher" screentip="This is cool" onAction="OnAction" getEnabled="OnGetEnabled"/>
+          </dialogBoxLauncher>
+        </group>
+      </tab>
+    </tabs>
+    <contextualTabs>
+      <tabSet idMso="TabComposeTools">
+        <tab idMso="TabMessage">
+          <group id="DivocGroupInline" insertAfterMso="GroupIncludeMainTab" getLabel="OnGetLabel" visible="true">
+            <button id="InsertAttachments" size="large" getLabel="OnGetLabel" onAction="OnAction" getImage="OnGetImage"/>
+          </group>
+        </tab>
+      </tabSet>
+    </contextualTabs>  </ribbon>
+</customUI>
+
