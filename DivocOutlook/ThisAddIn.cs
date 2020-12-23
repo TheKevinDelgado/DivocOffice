@@ -5,10 +5,7 @@ using System.Text;
 using System.Xml.Linq;
 using Outlook = Microsoft.Office.Interop.Outlook;
 using Office = Microsoft.Office.Core;
-using System.Diagnostics;
-using System.Reflection;
-using Serilog;
-using Serilog.Core;
+using DivocCommon;
 
 namespace DivocOutlook
 {
@@ -18,46 +15,11 @@ namespace DivocOutlook
         Outlook.Inspectors _inspectors;
         Dictionary<Guid, OLViewWrapperBase> _WrappedViews;
 
-        static RibbonManager ribbonManager = null;
-
-        static Logger _log = null;
-
-        /// <summary>
-        /// Static logger that can be accessed directly if something other than the LogMethod method is needed
-        /// eg: exceptions
-        /// </summary>
-        public static Logger Log
-        {
-            get
-            {
-                if(_log == null)
-                {
-                    _log = new LoggerConfiguration()
-                        .MinimumLevel.Debug()
-                        .WriteTo.Console()
-                        .WriteTo.File("logs\\Outlook.log", rollingInterval: RollingInterval.Day)
-                        .CreateLogger();
-                }
-
-                return _log;
-            }
-        }
-
-        /// <summary>
-        /// Static method to make logging easier
-        /// </summary>
-        /// <param name="message"></param>
-        public static void LogMethod(string message = "")
-        {
-            StackTrace st = new StackTrace();
-            StackFrame sf = st.GetFrame(1);
-            MethodBase mb = sf.GetMethod();
-            Log.Information("[{type}.{method}] {message}", mb.DeclaringType.Name, mb.Name, message);
-        }
+        static OutlookRibbonManager ribbonManager = null;
 
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
-            LogMethod();
+            LogManager.LogMethod();
 
             _WrappedViews = new Dictionary<Guid, OLViewWrapperBase>();
 
@@ -91,14 +53,16 @@ namespace DivocOutlook
 
         void WrapExplorer(Outlook.Explorer explorer)
         {
-            LogMethod();
+            LogManager.LogMethod();
+
             ExplorerWrapper wrappedExplorer = new ExplorerWrapper(explorer);
             wrappedExplorer.Closed += new WindowWrapperClosedDelegate(WrappedView_Closed);
             _WrappedViews[wrappedExplorer.Id] = wrappedExplorer;
         }
         void WrapInspector(Outlook.Inspector inspector)
         {
-            LogMethod();
+            LogManager.LogMethod();
+
             InspectorWrapper wrappedInspector = new InspectorWrapper(inspector);
             wrappedInspector.Closed += new WindowWrapperClosedDelegate(WrappedView_Closed);
             _WrappedViews[wrappedInspector.Id] = wrappedInspector;
@@ -111,7 +75,7 @@ namespace DivocOutlook
 
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
         {
-            LogMethod();
+            LogManager.LogMethod();
 
             // Note: Outlook no longer raises this event. If you have code that 
             //    must run when Outlook shuts down, see https://go.microsoft.com/fwlink/?LinkId=506785
@@ -119,12 +83,12 @@ namespace DivocOutlook
 
         protected override Office.IRibbonExtensibility CreateRibbonExtensibilityObject()
         {
-            LogMethod();
+            LogManager.LogMethod();
 
             if (ribbonManager != null)
                 return ribbonManager;
             else
-                return ribbonManager = new RibbonManager();
+                return ribbonManager = new OutlookRibbonManager();
         }
 
         public static void InvalidateRibbon()
