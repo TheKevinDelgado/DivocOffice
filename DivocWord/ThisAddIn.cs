@@ -6,17 +6,32 @@ using System.Xml.Linq;
 using Word = Microsoft.Office.Interop.Word;
 using Office = Microsoft.Office.Core;
 using Microsoft.Office.Tools.Word;
+using DivocCommon;
 
 namespace DivocWord
 {
     public partial class ThisAddIn
     {
+        static WordRibbonManager ribbonManager = null;
+
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
+            LogManager.LogMethod();
         }
 
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
         {
+            LogManager.LogMethod();
+        }
+
+        protected override Office.IRibbonExtensibility CreateRibbonExtensibilityObject()
+        {
+            LogManager.LogMethod();
+
+            if (ribbonManager != null)
+                return ribbonManager;
+            else
+                return ribbonManager = new WordRibbonManager();
         }
 
         #region VSTO generated code

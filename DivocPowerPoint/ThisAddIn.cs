@@ -5,17 +5,32 @@ using System.Text;
 using System.Xml.Linq;
 using PowerPoint = Microsoft.Office.Interop.PowerPoint;
 using Office = Microsoft.Office.Core;
+using DivocCommon;
 
 namespace DivocPowerPoint
 {
     public partial class ThisAddIn
     {
+        static PowerPointRibbonManager ribbonManager = null;
+
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
+            LogManager.LogMethod();
         }
 
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
         {
+            LogManager.LogMethod();
+        }
+
+        protected override Office.IRibbonExtensibility CreateRibbonExtensibilityObject()
+        {
+            LogManager.LogMethod();
+
+            if (ribbonManager != null)
+                return ribbonManager;
+            else
+                return ribbonManager = new PowerPointRibbonManager();
         }
 
         #region VSTO generated code
