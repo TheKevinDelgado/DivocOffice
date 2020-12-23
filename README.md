@@ -15,4 +15,4 @@ Functional Office VSTO Add-ins for Outlook, Word, PowerPoint and Excel
 
 ### Desktop Office Integration Overview
 
-![Windows Desktop Office](./DivocOffice/Docs/Assets/Windows Desktop Office.svg)
+![Windows Desktop Office](/Docs/Assets/WindowsDesktopOffice.svg)
