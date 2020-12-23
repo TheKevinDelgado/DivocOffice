@@ -18,9 +18,19 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{61348E0C-7FF1-4661-B822-8DC93130456D}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
+		Docs\Assets\Windows Desktop Office.svg = Docs\Assets\Windows Desktop Office.svg
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DivocOutlookTests", "DivocOutlookTests\DivocOutlookTests.csproj", "{15340AAF-33FD-4102-B670-EE0873E39F9D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{3504BFB0-BF1F-4F5A-8A98-A08F7BD13683}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assets", "Assets", "{F3BE911C-B553-4AE5-BA24-CB8732016F4C}"
+	ProjectSection(SolutionItems) = preProject
+		Docs\Assets\CloudStorageDiagram.svg = Docs\Assets\CloudStorageDiagram.svg
+		Docs\README.md = Docs\README.md
+		Docs\Assets\Windows Desktop Office.svg = Docs\Assets\Windows Desktop Office.svg
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,6 +69,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3504BFB0-BF1F-4F5A-8A98-A08F7BD13683} = {61348E0C-7FF1-4661-B822-8DC93130456D}
+		{F3BE911C-B553-4AE5-BA24-CB8732016F4C} = {3504BFB0-BF1F-4F5A-8A98-A08F7BD13683}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2F7A5F4D-971A-4248-9B25-E88FB4349DA5}
