@@ -11,8 +11,8 @@ Functional Office VSTO Add-ins for Outlook, Word, PowerPoint and Excel
 
 ### Enterprise Cloud Storage Solution Overview
 
-![Cloud Storage Diagram](/Docs/Assets/Cloud Storage Diagram.svg)
+![Cloud Storage Diagram](DivocOffice/Docs/Assets/Cloud Storage Diagram.svg)
 
 ### Desktop Office Integration Overview
 
-![Windows Desktop Office](/Docs/Assets/Windows Desktop Office.svg)
+![Windows Desktop Office](/DivocOffice/Docs/Assets/Windows Desktop Office.svg)
