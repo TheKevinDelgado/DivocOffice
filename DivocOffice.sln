@@ -18,7 +18,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{61348E0C-7FF1-4661-B822-8DC93130456D}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
-		Docs\Assets\Windows Desktop Office.svg = Docs\Assets\Windows Desktop Office.svg
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DivocOutlookTests", "DivocOutlookTests\DivocOutlookTests.csproj", "{15340AAF-33FD-4102-B670-EE0873E39F9D}"
@@ -29,7 +28,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assets", "Assets", "{F3BE91
 	ProjectSection(SolutionItems) = preProject
 		Docs\Assets\CloudStorageDiagram.svg = Docs\Assets\CloudStorageDiagram.svg
 		Docs\README.md = Docs\README.md
-		Docs\Assets\Windows Desktop Office.svg = Docs\Assets\Windows Desktop Office.svg
+		Docs\Assets\WindowsDesktopOffice.svg = Docs\Assets\WindowsDesktopOffice.svg
 	EndProjectSection
 EndProject
 Global

@@ -60,7 +60,8 @@ namespace TestShell
 
         private void TestShell_Load(object sender, EventArgs e)
         {
-
+            AuthenticationManager auth = new AuthenticationManager();
+            auth.Authenticate(this.Handle);
         }
     }
 }
