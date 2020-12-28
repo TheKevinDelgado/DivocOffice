@@ -1,22 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml.Linq;
-using Word = Microsoft.Office.Interop.Word;
+﻿using DivocCommon;
+using System;
+using System.Threading.Tasks;
 using Office = Microsoft.Office.Core;
-using Microsoft.Office.Tools.Word;
-using DivocCommon;
+using Word = Microsoft.Office.Interop.Word;
 
 namespace DivocWord
 {
     public partial class ThisAddIn
     {
         static WordRibbonManager ribbonManager = null;
+        AuthenticationManager auth = new AuthenticationManager();
 
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
             LogManager.LogMethod();
+
+            // Set up Application event handlers...
+            Word.ApplicationEvents4_Event events = (Word.ApplicationEvents4_Event)this.Application;
+            events.DocumentOpen += Events_DocumentOpen;
+            events.NewDocument += Events_NewDocument;
+        }
+
+        private async void Events_NewDocument(Word.Document Doc)
+        {
+            await DoAuthenticate();
+        }
+
+        private async void Events_DocumentOpen(Word.Document Doc)
+        {
+            await DoAuthenticate();
+        }
+
+        private async Task<bool> DoAuthenticate()
+        {
+            return await auth.Authenticate(new IntPtr(this.Application.ActiveWindow.Hwnd));
         }
 
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
