@@ -6,17 +6,32 @@ using System.Xml.Linq;
 using Excel = Microsoft.Office.Interop.Excel;
 using Office = Microsoft.Office.Core;
 using Microsoft.Office.Tools.Excel;
+using DivocCommon;
 
 namespace DivocExcel
 {
     public partial class ThisAddIn
     {
+        static ExcelRibbonManager ribbonManager = null;
+
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
+            LogManager.LogMethod();
         }
 
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
         {
+            LogManager.LogMethod();
+        }
+
+        protected override Office.IRibbonExtensibility CreateRibbonExtensibilityObject()
+        {
+            LogManager.LogMethod();
+
+            if (ribbonManager != null)
+                return ribbonManager;
+            else
+                return ribbonManager = new ExcelRibbonManager();
         }
 
         #region VSTO generated code

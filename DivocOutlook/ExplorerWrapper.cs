@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Outlook = Microsoft.Office.Interop.Outlook;
+using DivocCommon;
 
 namespace DivocOutlook
 {
@@ -13,8 +14,7 @@ namespace DivocOutlook
 
         public ExplorerWrapper(Outlook.Explorer explorer)
         {
-            //ThisAddIn.Log.Information("New Explorer created: {Id}", Id);
-            ThisAddIn.LogMethod(string.Format("Explorer Id: {0}", Id));
+            LogManager.LogMethod(string.Format("Explorer Id: {0}", Id));
 
             Explorer = explorer;
 
@@ -39,7 +39,7 @@ namespace DivocOutlook
 
         private void ExplorerWrapper_Close()
         {
-            ThisAddIn.LogMethod(string.Format("Explorer Id: {0}", Id));
+            LogManager.LogMethod(string.Format("Explorer Id: {0}", Id));
 
             RemoveEventHandlers();
 
@@ -54,18 +54,18 @@ namespace DivocOutlook
         private void ExplorerWrapper_Activate()
         {
             // Activate is called a lot, only log if needed
-            ThisAddIn.LogMethod(string.Format("Explorer Id: {0}", Id));
+            LogManager.LogMethod(string.Format("Explorer Id: {0}", Id));
         }
 
         private void ExplorerWrapper_Deactivate()
         {
             // Deactivate is called a lot, only log if needed
-            ThisAddIn.LogMethod(string.Format("Explorer Id: {0}", Id));
+            LogManager.LogMethod(string.Format("Explorer Id: {0}", Id));
         }
 
         private void Explorer_SelectionChange()
         {
-            ThisAddIn.LogMethod(string.Format("Explorer Id: {0}", Id));
+            LogManager.LogMethod(string.Format("Explorer Id: {0}", Id));
 
             // Tell ribbon to update
             ThisAddIn.InvalidateRibbon();

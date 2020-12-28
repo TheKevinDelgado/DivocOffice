@@ -33,19 +33,17 @@ using System.Drawing;
 namespace DivocOutlook
 {
     [ComVisible(true)]
-    public class RibbonManager : Office.IRibbonExtensibility
+    public class OutlookRibbonManager : OfficeRibbonManagerBase, Office.IRibbonExtensibility
     {
-        public Office.IRibbonUI Ribbon { get; private set; }
-
-        public RibbonManager()
+        public OutlookRibbonManager()
         {
         }
 
         #region IRibbonExtensibility Members
 
-        public string GetCustomUI(string ribbonID)
+        public override string GetCustomUI(string ribbonID)
         {
-            ThisAddIn.LogMethod(string.Format("Ribbon Id: {0}", ribbonID));
+            LogManager.LogMethod(string.Format("Ribbon Id: {0}", ribbonID));
 
             string ribbonUI = null;
 
@@ -62,6 +60,10 @@ namespace DivocOutlook
                 case "Microsoft.Outlook.Mail.Compose":
                     ribbonUI = GetResourceText("DivocOutlook.RibbonInspectorCompose.xml");
                     break;
+
+                default:
+                    ribbonUI = base.GetCustomUI(ribbonID);
+                    break;
             }
 
             return ribbonUI;
@@ -72,102 +74,7 @@ namespace DivocOutlook
         #region Ribbon Callbacks
         //Create callback methods here. For more information about adding callback methods, visit https://go.microsoft.com/fwlink/?LinkID=271226
 
-        public void Ribbon_Load(Office.IRibbonUI ribbonUI)
-        {
-            Ribbon = ribbonUI;
-        }
-
-        public string OnGetLabel(Office.IRibbonControl control)
-        {
-            string label =  string.Empty;
-
-            try
-            {
-                string id = control.Id;
-
-                ThisAddIn.LogMethod(string.Format("Ribbon Control Id: {0}", control.Id));
-
-                switch (id)
-                {
-                    case RibbonIDs.DIVOC_GROUP:
-                    case RibbonIDs.DIVOC_GROUP_INLINE:
-                        label = ResourceBroker.GetString(ResourceBroker.ResourceID.PRODUCT_NAME);
-                        break;
-
-                    case RibbonIDs.INSERT_ATTACHMENTS:
-                        label = ResourceBroker.GetString(ResourceBroker.ResourceID.INSERT_ATTACHMENTS_LABEL);
-                        break;
-
-                    case RibbonIDs.SAVE_MAIL:
-                        label = ResourceBroker.GetString(ResourceBroker.ResourceID.SAVE_MAIL_LABEL);
-                        break;
-
-                    case RibbonIDs.SAVE_ATTACHMENTS:
-                        label = ResourceBroker.GetString(ResourceBroker.ResourceID.SAVE_ATTACHMENTS_LABEL);
-                        break;
-                }
-            }
-            catch(Exception ex)
-            {
-                ThisAddIn.Log.Error("{@ex}", ex);
-            }
-
-            return label;
-        }
-
-        public Bitmap OnGetImage(Office.IRibbonControl control)
-        {
-            Bitmap img = null;
-
-            try
-            {
-                string id = control.Id;
-
-                ThisAddIn.LogMethod(string.Format("Ribbon Control Id: {0}", control.Id));
-
-                switch (id)
-                {
-                    case RibbonIDs.SAVE_MAIL:
-                        img = ResourceBroker.GetImage(ResourceBroker.ResourceID.SAVE_MAIL_IMAGE);
-                        break;
-
-                    case RibbonIDs.SAVE_ATTACHMENTS:
-                        img = ResourceBroker.GetImage(ResourceBroker.ResourceID.SAVE_ATTACHMENTS_IMAGE);
-                        break;
-
-                    case RibbonIDs.INSERT_ATTACHMENTS:
-                        img = ResourceBroker.GetImage(ResourceBroker.ResourceID.INSERT_ATTACHMENTS_IMAGE);
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                ThisAddIn.Log.Error("{@ex}", ex);
-            }
-
-            return img;
-        }
-
-        public string OnGetSuperTip(Office.IRibbonControl control)
-        {
-            string tip = string.Empty;
-
-            try
-            {
-                ThisAddIn.LogMethod(string.Format("Ribbon Control Id: {0}", control.Id));
-
-                dynamic context = control.Context;
-
-            }
-            catch (Exception ex)
-            {
-                ThisAddIn.Log.Error("{@ex}", ex);
-            }
-
-            return tip;
-        }
-
-        public void OnAction(Office.IRibbonControl control)
+        public override void OnAction(Office.IRibbonControl control)
         {
             try
             {
@@ -183,12 +90,12 @@ namespace DivocOutlook
                 }
                 else
                 {
-                    ThisAddIn.LogMethod(string.Format("Non-Explorer/Inspector Ribbon Control Context Id: {0}", control.Id));
+                    base.OnAction(control);
                 }
             }
             catch(Exception ex)
             {
-                ThisAddIn.Log.Error("{@ex}", ex);
+                LogManager.LogException(ex);
             }
         }
 
@@ -196,7 +103,7 @@ namespace DivocOutlook
         {
             try
             {
-                ThisAddIn.LogMethod(string.Format("Ribbon Control Id: {0}", control.Id));
+                LogManager.LogMethod(string.Format("Ribbon Control Id: {0}", control.Id));
 
                 Outlook.Explorer expl = control.Context as Outlook.Explorer;
 
@@ -211,7 +118,7 @@ namespace DivocOutlook
             }
             catch (Exception ex)
             {
-                ThisAddIn.Log.Error("{@ex}", ex);
+                LogManager.LogException(ex);
             }
         }
 
@@ -219,7 +126,7 @@ namespace DivocOutlook
         {
             try
             {
-                ThisAddIn.LogMethod(string.Format("Ribbon Control Id: {0}", control.Id));
+                LogManager.LogMethod(string.Format("Ribbon Control Id: {0}", control.Id));
 
                 Outlook.Inspector insp = control.Context as Outlook.Inspector;
 
@@ -234,11 +141,11 @@ namespace DivocOutlook
                             {
                                 if (mail.Sent)
                                 {
-                                    MessageBox.Show("Woo woo Inspector read mode");
+                                    // Inspector is in read mode
                                 }
                                 else
                                 {
-                                    MessageBox.Show("Woo woo Inspector compose mode");
+                                    // Inspector is in compose mode
                                 }
                             }
                             break;
@@ -247,17 +154,17 @@ namespace DivocOutlook
             }
             catch (Exception ex)
             {
-                ThisAddIn.Log.Error("{@ex}", ex);
+                LogManager.LogException(ex);
             }
         }
 
-        public bool OnGetEnabled(Office.IRibbonControl control)
+        public override bool OnGetEnabled(Office.IRibbonControl control)
         {
             bool enabled = true;
 
             try
             {
-                ThisAddIn.LogMethod(string.Format("Ribbon Control Id: {0}", control.Id));
+                LogManager.LogMethod(string.Format("Ribbon Control Id: {0}", control.Id));
 
                 dynamic context = control.Context;
 
@@ -271,12 +178,12 @@ namespace DivocOutlook
                 }
                 else
                 {
-                    ThisAddIn.LogMethod(string.Format("Non-Explorer/Inspector Ribbon Control Context Id: {0}", control.Id));
+                    base.OnGetEnabled(control);
                 }
             }
             catch (Exception ex)
             {
-                ThisAddIn.Log.Error("{@ex}", ex);
+                LogManager.LogException(ex);
             }
 
             return enabled;
@@ -288,7 +195,7 @@ namespace DivocOutlook
 
             try
             {
-                ThisAddIn.LogMethod(string.Format("Ribbon Control Id: {0}", control.Id));
+                LogManager.LogMethod(string.Format("Ribbon Control Id: {0}", control.Id));
 
                 Outlook.Explorer expl = control.Context as Outlook.Explorer;
 
@@ -326,7 +233,7 @@ namespace DivocOutlook
             }
             catch (Exception ex)
             {
-                ThisAddIn.Log.Error("{@ex}", ex);
+                LogManager.LogException(ex);
             }
 
             return enabled;
@@ -338,7 +245,7 @@ namespace DivocOutlook
 
             try
             {
-                ThisAddIn.LogMethod(string.Format("Ribbon Control Id: {0}", control.Id));
+                LogManager.LogMethod(string.Format("Ribbon Control Id: {0}", control.Id));
 
                 Outlook.Inspector insp = control.Context as Outlook.Inspector;
 
@@ -360,34 +267,10 @@ namespace DivocOutlook
             }
             catch (Exception ex)
             {
-                ThisAddIn.Log.Error("{@ex}", ex);
+                LogManager.LogException(ex);
             }
 
             return enabled;
-        }
-
-        #endregion
-
-        #region Helpers
-
-        private static string GetResourceText(string resourceName)
-        {
-            Assembly asm = Assembly.GetExecutingAssembly();
-            string[] resourceNames = asm.GetManifestResourceNames();
-            for (int i = 0; i < resourceNames.Length; ++i)
-            {
-                if (string.Compare(resourceName, resourceNames[i], StringComparison.OrdinalIgnoreCase) == 0)
-                {
-                    using (StreamReader resourceReader = new StreamReader(asm.GetManifestResourceStream(resourceNames[i])))
-                    {
-                        if (resourceReader != null)
-                        {
-                            return resourceReader.ReadToEnd();
-                        }
-                    }
-                }
-            }
-            return null;
         }
 
         #endregion

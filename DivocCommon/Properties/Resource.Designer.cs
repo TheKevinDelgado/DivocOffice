@@ -82,6 +82,25 @@ namespace DivocCommon.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap OpenIcon {
+            get {
+                object obj = ResourceManager.GetObject("OpenIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open.
+        /// </summary>
+        internal static string OpenLabel {
+            get {
+                return ResourceManager.GetString("OpenLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ProductLogo {
             get {
                 object obj = ResourceManager.GetObject("ProductLogo", resourceCulture);
@@ -120,9 +139,9 @@ namespace DivocCommon.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap SaveMailIcon {
+        internal static System.Drawing.Bitmap SaveIcon {
             get {
-                object obj = ResourceManager.GetObject("SaveMailIcon", resourceCulture);
+                object obj = ResourceManager.GetObject("SaveIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -130,9 +149,9 @@ namespace DivocCommon.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Save.
         /// </summary>
-        internal static string SaveMailLabel {
+        internal static string SaveLabel {
             get {
-                return ResourceManager.GetString("SaveMailLabel", resourceCulture);
+                return ResourceManager.GetString("SaveLabel", resourceCulture);
             }
         }
     }

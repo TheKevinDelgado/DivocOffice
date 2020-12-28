@@ -8,20 +8,33 @@ using System.Drawing;
 
 namespace DivocCommon
 {
+    /// <summary>
+    /// Handler for getting resources from the common dll to the add-ins to facilitate
+    /// localization efforts being centralized.
+    /// </summary>
     public static class ResourceBroker
     {
-        public sealed class ResourceID
+        /// <summary>
+        /// Identifiers used by callers to map to a resource. 
+        /// </summary>
+        public enum ResourceID
         {
-            public const string PRODUCT_NAME = "ProductName";
-            public const string INSERT_ATTACHMENTS_LABEL = "InsertAttachmentsLabel";
-            public const string SAVE_MAIL_LABEL = "SaveMailLabel";
-            public const string SAVE_ATTACHMENTS_LABEL = "SaveAttachmentsLabel";
-            public const string SAVE_MAIL_IMAGE = "SaveMailImage";
-            public const string SAVE_ATTACHMENTS_IMAGE = "SaveAttachmentsImage";
-            public const string INSERT_ATTACHMENTS_IMAGE = "InsertAttachmentsImage";
-        }
+            PRODUCT_NAME,
 
-        public static string GetString(string id)
+            SAVE_LABEL,
+            SAVE_IMAGE,
+
+            SAVE_ATTACHMENTS_LABEL,
+            SAVE_ATTACHMENTS_IMAGE,
+
+            INSERT_ATTACHMENTS_LABEL,
+            INSERT_ATTACHMENTS_IMAGE,
+
+            OPEN_LABEL,
+            OPEN_IMAGE,
+        }
+           
+        public static string GetString(ResourceID id)
         {
             string str = string.Empty;
 
@@ -35,26 +48,30 @@ namespace DivocCommon
                     str = Properties.Resource.InsertAttachmentsLabel;
                     break;
 
-                case ResourceID.SAVE_MAIL_LABEL:
-                    str = Properties.Resource.SaveMailLabel;
+                case ResourceID.SAVE_LABEL:
+                    str = Properties.Resource.SaveLabel;
                     break;
 
                 case ResourceID.SAVE_ATTACHMENTS_LABEL:
                     str = Properties.Resource.SaveAttachmentsLabel;
+                    break;
+
+                case ResourceID.OPEN_LABEL:
+                    str = Properties.Resource.OpenLabel;
                     break;
             }
 
             return str;
         }
 
-        public static Bitmap GetImage(string id)
+        public static Bitmap GetImage(ResourceID id)
         {
             Bitmap img = null;
 
             switch(id)
             {
-                case ResourceID.SAVE_MAIL_IMAGE:
-                    img = Properties.Resource.SaveMailIcon;
+                case ResourceID.SAVE_IMAGE:
+                    img = Properties.Resource.SaveIcon;
                     break;
 
                 case ResourceID.SAVE_ATTACHMENTS_IMAGE:
@@ -63,6 +80,10 @@ namespace DivocCommon
 
                 case ResourceID.INSERT_ATTACHMENTS_IMAGE:
                     img = Properties.Resource.InsertAttachmentsIcon;
+                    break;
+
+                case ResourceID.OPEN_IMAGE:
+                    img = Properties.Resource.OpenIcon;
                     break;
             }
 

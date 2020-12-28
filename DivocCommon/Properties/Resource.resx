@@ -124,6 +124,12 @@
   <data name="InsertAttachmentsLabel" xml:space="preserve">
     <value>Insert Attachments</value>
   </data>
+  <data name="OpenIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Open.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="OpenLabel" xml:space="preserve">
+    <value>Open</value>
+  </data>
   <data name="ProductLogo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ProductLogo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -136,10 +142,10 @@
   <data name="SaveAttachmentsLabel" xml:space="preserve">
     <value>Save Attachments</value>
   </data>
-  <data name="SaveMailIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="SaveIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SaveMail.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="SaveMailLabel" xml:space="preserve">
+  <data name="SaveLabel" xml:space="preserve">
     <value>Save</value>
   </data>
 </root>

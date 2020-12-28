@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Outlook = Microsoft.Office.Interop.Outlook;
+using DivocCommon;
 
 namespace DivocOutlook
 {
@@ -13,7 +14,7 @@ namespace DivocOutlook
 
         public InspectorWrapper(Outlook.Inspector inspector)
         {
-            ThisAddIn.LogMethod(string.Format("Inspector Id: {0}", Id));
+            LogManager.LogMethod(string.Format("Inspector Id: {0}", Id));
 
             Inspector = inspector;
 
@@ -36,7 +37,7 @@ namespace DivocOutlook
 
         private void InspectorWrapper_Close()
         {
-            ThisAddIn.LogMethod(string.Format("Inspector Id: {0}", Id));
+            LogManager.LogMethod(string.Format("Inspector Id: {0}", Id));
 
             RemoveEventHandlers();
 
@@ -51,14 +52,14 @@ namespace DivocOutlook
         private void InspectorWrapper_Activate()
         {
             // Activate is called a lot, only log if needed
-            ThisAddIn.LogMethod(string.Format("Inspector Id: {0}", Id));
+            LogManager.LogMethod(string.Format("Inspector Id: {0}", Id));
             ThisAddIn.InvalidateRibbon();
         }
 
         private void InspectorWrapper_Deactivate()
         {
             // Deactivate is called a lot, only log if needed
-            ThisAddIn.LogMethod(string.Format("Inspector Id: {0}", Id));
+            LogManager.LogMethod(string.Format("Inspector Id: {0}", Id));
         }
     }
 }
