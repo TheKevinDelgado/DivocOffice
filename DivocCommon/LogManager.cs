@@ -45,5 +45,10 @@ namespace DivocCommon
         {
             _log.Error("{@ex}", ex);
         }
+
+        public static void LogInformation(string message)
+        {
+            _log.Information(message);
+        }
     }
 }

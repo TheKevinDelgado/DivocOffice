@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using Office = Microsoft.Office.Core;
+using Word = Microsoft.Office.Interop.Word;
 using DivocCommon;
 
 // TODO:  Follow these steps to enable the Ribbon (XML) item:
@@ -80,6 +81,18 @@ namespace DivocWord
             }
 
             return enabled;
+        }
+
+        public override void OnAction(Office.IRibbonControl control)
+        {          
+            switch(control.Id)
+            {
+                case RibbonIDs.SAVE_DOCUMENT:
+                    break;
+
+                case RibbonIDs.OPEN_DOCUMENT:
+                    break;
+            }
         }
 
         #endregion
