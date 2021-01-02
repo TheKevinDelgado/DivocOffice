@@ -82,6 +82,18 @@ namespace DivocExcel
             return enabled;
         }
 
+        public override void OnAction(Office.IRibbonControl control)
+        {
+            switch (control.Id)
+            {
+                case RibbonIDs.SAVE_WORKBOOK:
+                    break;
+
+                case RibbonIDs.OPEN_WORKBOOK:
+                    break;
+            }
+        }
+
         #endregion
     }
 }

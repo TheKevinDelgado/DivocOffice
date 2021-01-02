@@ -112,6 +112,10 @@ namespace DivocOutlook
                     switch (control.Id)
                     {
                         case RibbonIDs.SAVE_MAIL:
+                            SaveEmails(expl);
+                            break;
+                        case RibbonIDs.SAVE_ATTACHMENTS:
+                            SaveAttachments(expl);
                             break;
                     }
                 }
@@ -119,6 +123,56 @@ namespace DivocOutlook
             catch (Exception ex)
             {
                 LogManager.LogException(ex);
+            }
+        }
+
+        private void SaveEmails(Outlook.Explorer expl)
+        {
+            // * Get the selection of emails
+            // * Save them to user's temp dir
+            // * Pass list of file paths to the contentmanager for upload
+            // * Content manager will delete the temps
+            if (expl.Selection.Count > 0 && expl.Selection[1] is Outlook.MailItem)
+            {
+                string userTempPath = Path.GetTempPath();
+                List<KeyValuePair<string, string>> fileInfoList = new List<KeyValuePair<string, string>>();
+
+                foreach (Outlook.MailItem item in expl.Selection)
+                {
+                    string fileName = item.Subject + ".msg";
+                    string filePath = userTempPath + fileName;
+                    item.SaveAs(filePath, Outlook.OlSaveAsType.olMSGUnicode);
+                    fileInfoList.Add(new KeyValuePair<string, string>(fileName, filePath));
+                }
+
+                ThisAddIn.ContentManager.SaveDocumentsREST(fileInfoList);
+            }
+        }
+
+        private void SaveAttachments(Outlook.Explorer expl)
+        {
+            // * Get the selection of emails
+            // * Get the attachments from the emails
+            // * Save them to user's temp dir
+            // * Pass list of file paths to the contentmanager for upload
+            // * Content manager will delete the temps
+            if (expl.Selection.Count > 0 && expl.Selection[1] is Outlook.MailItem)
+            {
+                string userTempPath = Path.GetTempPath();
+                List<KeyValuePair<string, string>> fileInfoList = new List<KeyValuePair<string, string>>();
+
+                foreach (Outlook.MailItem item in expl.Selection)
+                {
+                    foreach(Outlook.Attachment attach in item.Attachments)
+                    {
+                        string fileName = attach.FileName;
+                        string filePath = userTempPath + fileName;
+                        attach.SaveAsFile(filePath);
+                        fileInfoList.Add(new KeyValuePair<string, string>(fileName, filePath));
+                    }
+                }
+
+                ThisAddIn.ContentManager.SaveDocumentsREST(fileInfoList);
             }
         }
 
@@ -132,10 +186,11 @@ namespace DivocOutlook
 
                 if(insp != null)
                 {
-                    switch(control.Id)
+                    Outlook.MailItem mail = insp.CurrentItem as Outlook.MailItem;
+
+                    switch (control.Id)
                     {
                         case RibbonIDs.INSERT_ATTACHMENTS:
-                            Outlook.MailItem mail = insp.CurrentItem as Outlook.MailItem;
 
                             if (mail != null)
                             {
@@ -149,12 +204,38 @@ namespace DivocOutlook
                                 }
                             }
                             break;
+
+                        case RibbonIDs.SAVE_ATTACHMENTS:
+                            SaveAttachments(mail);
+                            break;
                     }
                 }
             }
             catch (Exception ex)
             {
                 LogManager.LogException(ex);
+            }
+        }
+
+        private void SaveAttachments(Outlook.MailItem email)
+        {
+            // Save the email's attachments. May need to check each attachment
+            // and make sure it isn't a signature image or such. Don't save those.
+
+            if(email.Attachments.Count > 0) // Should be filtered via enablement but just in case
+            {
+                string userTempPath = Path.GetTempPath();
+                List<KeyValuePair<string, string>> fileInfoList = new List<KeyValuePair<string, string>>();
+
+                foreach (Outlook.Attachment attach in email.Attachments)
+                {
+                    string fileName = attach.FileName;
+                    string filePath = userTempPath + fileName;
+                    attach.SaveAsFile(filePath);
+                    fileInfoList.Add(new KeyValuePair<string, string>(fileName, filePath));
+                }
+
+                ThisAddIn.ContentManager.SaveDocumentsREST(fileInfoList);
             }
         }
 
