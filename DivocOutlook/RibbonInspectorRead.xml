@@ -3,7 +3,7 @@
   <ribbon>
     <tabs>
       <tab idMso="TabReadMessage">
-        <group id="DivocGroup" getLabel="OnGetLabel" insertAfterMso="GroupRespond">
+        <group id="DivocGroup" getLabel="OnGetLabel" insertAfterMso="GroupRespond" getImage="OnGetImage">
           <button id="SaveMail" size="large" getLabel="OnGetLabel" onAction="OnAction" getImage="OnGetImage"/>
           <button id="SaveAttachments" size="large" getLabel="OnGetLabel" onAction="OnAction" getImage="OnGetImage" getEnabled="OnGetEnabled"/>
         </group>

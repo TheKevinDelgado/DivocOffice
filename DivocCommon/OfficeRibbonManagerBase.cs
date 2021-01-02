@@ -96,6 +96,13 @@ namespace DivocCommon
 
                 switch (id)
                 {
+                    case RibbonIDs.DIVOC_GROUP:
+                    case RibbonIDs.DIVOC_GROUP_INLINE:
+                        // When ribbon is squished, a group can be collapse into a single drop-down
+                        // In this case it will request an image for the group to display
+                        img = ResourceBroker.GetImage(ResourceBroker.ResourceID.PRODUCT_IMAGE);
+                        break;
+
                     case RibbonIDs.SAVE_MAIL:
                     case RibbonIDs.SAVE_DOCUMENT:
                     case RibbonIDs.SAVE_PRESENTATION:

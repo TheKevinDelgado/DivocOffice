@@ -15,8 +15,9 @@ namespace DivocExcel
     {
         static ExcelRibbonManager ribbonManager = null;
         AuthenticationManager auth = new AuthenticationManager();
+        public static ContentManager ContentManager { get; private set; }
 
-        private void ThisAddIn_Startup(object sender, System.EventArgs e)
+        private async void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
             LogManager.LogMethod();
 
@@ -24,21 +25,17 @@ namespace DivocExcel
             Excel.AppEvents_Event events = (Excel.AppEvents_Event)this.Application;
             events.NewWorkbook += Events_NewWorkbook;
             events.WorkbookOpen += Events_WorkbookOpen;
+
+            await auth.Authenticate(IntPtr.Zero);
+            ContentManager = new ContentManager();
         }
 
-        private async void Events_WorkbookOpen(Excel.Workbook Wb)
+        private void Events_WorkbookOpen(Excel.Workbook Wb)
         {
-            await DoAuthenticate();
         }
 
-        private async void Events_NewWorkbook(Excel.Workbook Wb)
+        private void Events_NewWorkbook(Excel.Workbook Wb)
         {
-            await DoAuthenticate();
-        }
-
-        private async Task<bool> DoAuthenticate()
-        {
-            return await auth.Authenticate(new IntPtr(this.Application.ActiveWindow.Hwnd));
         }
 
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)

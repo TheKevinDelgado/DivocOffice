@@ -10,8 +10,9 @@ namespace DivocWord
     {
         static WordRibbonManager ribbonManager = null;
         AuthenticationManager auth = new AuthenticationManager();
+        public static ContentManager ContentManager { get; private set; }
 
-        private void ThisAddIn_Startup(object sender, System.EventArgs e)
+        private async void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
             LogManager.LogMethod();
 
@@ -19,21 +20,17 @@ namespace DivocWord
             Word.ApplicationEvents4_Event events = (Word.ApplicationEvents4_Event)this.Application;
             events.DocumentOpen += Events_DocumentOpen;
             events.NewDocument += Events_NewDocument;
+
+            await auth.Authenticate(IntPtr.Zero);
+            ContentManager = new ContentManager();
         }
 
-        private async void Events_NewDocument(Word.Document Doc)
+        private void Events_NewDocument(Word.Document Doc)
         {
-            await DoAuthenticate();
         }
 
-        private async void Events_DocumentOpen(Word.Document Doc)
+        private void Events_DocumentOpen(Word.Document Doc)
         {
-            await DoAuthenticate();
-        }
-
-        private async Task<bool> DoAuthenticate()
-        {
-            return await auth.Authenticate(new IntPtr(this.Application.ActiveWindow.Hwnd));
         }
 
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)

@@ -19,6 +19,7 @@ namespace DivocOutlook
 
         static OutlookRibbonManager ribbonManager = null;
         AuthenticationManager auth = new AuthenticationManager();
+        public static ContentManager ContentManager { get; private set; }
 
         private async void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
@@ -42,8 +43,10 @@ namespace DivocOutlook
                 await DoAuthenticate(insp);
             }
 
-            _explorers.NewExplorer += _explorers_NewExplorer; ;
-            _inspectors.NewInspector += _inspectors_NewInspector; ;
+            _explorers.NewExplorer += _explorers_NewExplorer;
+            _inspectors.NewInspector += _inspectors_NewInspector;
+
+            ContentManager = new ContentManager();
         }
 
         private async void _explorers_NewExplorer(Outlook.Explorer Explorer)

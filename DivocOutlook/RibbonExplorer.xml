@@ -3,7 +3,7 @@
   <ribbon>
     <tabs>
       <tab idMso="TabMail">
-        <group id="DivocGroup" getLabel="OnGetLabel" insertAfterMso="GroupMailRespond">
+        <group id="DivocGroup" getLabel="OnGetLabel" insertAfterMso="GroupMailRespond" getImage="OnGetImage">
           <button id="SaveMail" size="large" getLabel="OnGetLabel" onAction="OnAction" getEnabled="OnGetEnabled" getImage="OnGetImage" getSupertip="OnGetSuperTip"/>
           <button id="SaveAttachments" size="large" getLabel="OnGetLabel" onAction="OnAction" getImage="OnGetImage" getEnabled="OnGetEnabled"/>
           <dialogBoxLauncher>
@@ -15,7 +15,7 @@
     <contextualTabs>
       <tabSet idMso="TabComposeTools">
         <tab idMso="TabMessage">
-          <group id="DivocGroupInline" insertAfterMso="GroupIncludeMainTab" getLabel="OnGetLabel" visible="true">
+          <group id="DivocGroupInline" insertAfterMso="GroupIncludeMainTab" getLabel="OnGetLabel" getImage="OnGetImage" visible="true">
             <button id="InsertAttachments" size="large" getLabel="OnGetLabel" onAction="OnAction" getImage="OnGetImage"/>
           </group>
         </tab>
