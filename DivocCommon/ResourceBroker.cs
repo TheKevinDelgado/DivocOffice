@@ -20,6 +20,7 @@ namespace DivocCommon
         public enum ResourceID
         {
             PRODUCT_NAME,
+            PRODUCT_IMAGE,
 
             SAVE_LABEL,
             SAVE_IMAGE,
@@ -70,6 +71,10 @@ namespace DivocCommon
 
             switch(id)
             {
+                case ResourceID.PRODUCT_IMAGE:
+                    img = Properties.Resource.ProductLogo;
+                    break;
+
                 case ResourceID.SAVE_IMAGE:
                     img = Properties.Resource.SaveIcon;
                     break;

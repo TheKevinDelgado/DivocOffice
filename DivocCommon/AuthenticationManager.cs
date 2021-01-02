@@ -9,7 +9,6 @@ using System.Net.Http;
 using Microsoft.Identity.Client;
 using System.Security.Cryptography;
 using System.IO;
-using System.Windows.Forms;
 
 namespace DivocCommon
 {
@@ -21,14 +20,24 @@ namespace DivocCommon
     /// of the add-ins. This stuff appears to want to run in the main app UI thread, so 
     /// there may be limitations to this approad if using the .Net APIs. May be better to
     /// use javascript.
+    /// 
+    /// UPDATE: all that seems to matter is the msalcache.bin3 file, so moved it to appdata
+    /// and everything is awesome/cool when you're part of a team.
     /// </summary>
     public class AuthenticationManager
     {
+        /// <summary>
+        /// Application configuration information. Should be moved out of the scope of authentication
+        /// to more generically available/useful level, but for now only authentication is leveraging
+        /// this stuff so it is fine here.
+        /// </summary>
         private static class ConfigurationInfo
         {
             public static string ClientId = Environment.GetEnvironmentVariable("DIVOC_CLIENTID", EnvironmentVariableTarget.User);
             public static string Tenant = Environment.GetEnvironmentVariable("DIVOC_TENANT", EnvironmentVariableTarget.User);
             public static string Instance = Environment.GetEnvironmentVariable("DIVOC_INSTANCE", EnvironmentVariableTarget.User);
+
+            public static string AppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Divoc");
         }
 
         static class TokenCacheHelper
@@ -36,7 +45,7 @@ namespace DivocCommon
             /// <summary>
             /// Path to the token cache
             /// </summary>
-            public static readonly string CacheFilePath = System.Reflection.Assembly.GetExecutingAssembly().Location + ".msalcache.bin3";
+            public static readonly string CacheFilePath = Path.Combine(ConfigurationInfo.AppDataPath, "DivocCommon.dll.msalcache.bin3");
 
             private static readonly object FileLock = new object();
 
@@ -76,14 +85,21 @@ namespace DivocCommon
             }
         }
 
-        string graphAPIEndpoint = "https://graph.microsoft.com/v1.0/me";
-        string[] scopes = new string[] { "user.read" };
+        string[] scopes = new string[] { "user.read", "files.readwrite.all" };
 
         private static IPublicClientApplication _clientApp;
         public static IPublicClientApplication PublicClientApp { get { return _clientApp; } }
 
+        public static string AccessToken { get; private set; }
+
         public AuthenticationManager()
         {
+            // This app path stuff could/should go elsewhere, but since authentication is the only
+            // thing using it for now, and all add-ins use authentication, just leave it here.
+            // If the add-ins require their own subdirectories or just need to store other information,
+            // break app dir stuff out into something more generically usable across the solution.
+            Directory.CreateDirectory(ConfigurationInfo.AppDataPath);
+
             CreateApplication(false);
         }
 
@@ -122,9 +138,8 @@ namespace DivocCommon
 
             if (authResult != null)
             {
+                AccessToken = authResult.AccessToken;
                 success = true;
-                string content = await GetHttpContentWithToken(graphAPIEndpoint, authResult.AccessToken);
-                LogManager.LogInformation(content);
             }
 
             return success;

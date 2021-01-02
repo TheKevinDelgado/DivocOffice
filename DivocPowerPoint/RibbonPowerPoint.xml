@@ -3,7 +3,7 @@
   <ribbon>
     <tabs>
       <tab idMso="TabHome">
-        <group id="DivocGroup" getLabel="OnGetLabel">
+        <group id="DivocGroup" getLabel="OnGetLabel" getImage="OnGetImage">
           <button id="SavePresentation" size="large" getLabel="OnGetLabel" onAction="OnAction" getEnabled="OnGetEnabled" getImage="OnGetImage"/>
           <button id="OpenPresentation" size="large" getLabel="OnGetLabel" onAction="OnAction" getEnabled="OnGetEnabled" getImage="OnGetImage"/>
         </group>

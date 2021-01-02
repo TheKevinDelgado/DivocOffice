@@ -91,6 +91,7 @@ namespace DivocWord
                     break;
 
                 case RibbonIDs.OPEN_DOCUMENT:
+                    ThisAddIn.ContentManager.GetDocumentsREST();
                     break;
             }
         }
