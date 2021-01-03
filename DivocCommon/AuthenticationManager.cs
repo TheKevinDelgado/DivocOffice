@@ -13,24 +13,31 @@ using System.IO;
 namespace DivocCommon
 {
     /// <summary>
-    /// First pass MSAL user authentication. Currently, each Office Add-in creates its
-    /// own AuthenticationManager, which means each is authenticating separately, even though
-    /// they are all using the same client id/tenant, etc. Future revision could have a 
-    /// singleton out of proc server proxying authentication which would be called by all
-    /// of the add-ins. This stuff appears to want to run in the main app UI thread, so 
-    /// there may be limitations to this approad if using the .Net APIs. May be better to
-    /// use javascript.
-    /// 
-    /// UPDATE: all that seems to matter is the msalcache.bin3 file, so moved it to appdata
-    /// and everything is awesome/cool when you're part of a team.
+    /// Handle authentication using MSAL
     /// </summary>
+    /// <notes>
+    /// First pass MSAL user authentication. Currently, each Office Add-in creates its
+    /// own AuthenticationManager instance, but athentication is cached in the user's
+    /// AppData. So, if you authenticate in, say Outlook, then open Word, Word will
+    /// pull from the cache and not have to show he sign-in window.
+    /// This means a separate out of proc authentication proxy is not needed, as was
+    /// initially anticipated (was needed for the application this project is 
+    /// loosely modeling).
+    /// This stuff appears to want to run in the main app UI thread, so 
+    /// there may be limitations to this approad if using the .Net APIs.
+    /// May be better to use javascript in an out of proc server if an issue comes up.
+    /// </notes>
+    /// <TODO>
+    /// </TODO>
     public class AuthenticationManager
     {
         /// <summary>
-        /// Application configuration information. Should be moved out of the scope of authentication
-        /// to more generically available/useful level, but for now only authentication is leveraging
-        /// this stuff so it is fine here.
+        /// Application configuration information.         
         /// </summary>
+        /// <notes>
+        /// Should be moved out of the scope of authentication to more generically available/useful level, 
+        /// but for now only authentication is leveraging this stuff so it is fine here.
+        /// </notes>
         private static class ConfigurationInfo
         {
             public static string ClientId = Environment.GetEnvironmentVariable("DIVOC_CLIENTID", EnvironmentVariableTarget.User);
@@ -100,7 +107,7 @@ namespace DivocCommon
             // break app dir stuff out into something more generically usable across the solution.
             Directory.CreateDirectory(ConfigurationInfo.AppDataPath);
 
-            CreateApplication(false);
+            CreateApplication();
         }
 
         public async Task<bool> Authenticate(IntPtr wnd)
@@ -121,18 +128,20 @@ namespace DivocCommon
                 // A MsalUiRequiredException happened on AcquireTokenSilent. 
                 // This indicates you need to call AcquireTokenInteractive to acquire a token
                 System.Diagnostics.Debug.WriteLine($"MsalUiRequiredException: {ex.Message}");
+                LogManager.LogException(ex);
 
                 try
                 {
                     authResult = await PublicClientApp.AcquireTokenInteractive(scopes)
                         .WithAccount(firstAccount)
-                        //.WithParentActivityOrWindow(wnd) // optional, used to center the browser on the window
+                        .WithParentActivityOrWindow(wnd) // optional, used to center the browser on the window
                         .WithPrompt(Prompt.SelectAccount)
                         .ExecuteAsync();
                 }
                 catch (MsalException msalex)
                 {
                     string err = $"Error Acquiring Token:{System.Environment.NewLine}{msalex}";
+                    LogManager.LogException(msalex);
                 }
             }
 
@@ -157,11 +166,12 @@ namespace DivocCommon
                 catch (MsalException ex)
                 {
                     string err = $"Error signing-out user: {ex.Message}";
+                    LogManager.LogException(ex);
                 }
             }
         }
 
-        public static void CreateApplication(bool useWam)
+        public static void CreateApplication(bool useWam = false)
         {
             var builder = PublicClientApplicationBuilder.Create(ConfigurationInfo.ClientId)
                 .WithAuthority($"{ConfigurationInfo.Instance}{ConfigurationInfo.Tenant}")
@@ -174,25 +184,6 @@ namespace DivocCommon
             }
             _clientApp = builder.Build();
             TokenCacheHelper.EnableSerialization(_clientApp.UserTokenCache);
-        }
-
-        public async Task<string> GetHttpContentWithToken(string url, string token)
-        {
-            var httpClient = new System.Net.Http.HttpClient();
-            System.Net.Http.HttpResponseMessage response;
-            try
-            {
-                var request = new System.Net.Http.HttpRequestMessage(System.Net.Http.HttpMethod.Get, url);
-                //Add the token in Authorization header
-                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-                response = await httpClient.SendAsync(request);
-                var content = await response.Content.ReadAsStringAsync();
-                return content;
-            }
-            catch (Exception ex)
-            {
-                return ex.ToString();
-            }
         }
     }
 }
