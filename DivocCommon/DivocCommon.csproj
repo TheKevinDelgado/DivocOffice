@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="AuthenticationManager.cs" />
     <Compile Include="ContentManager.cs" />
+    <Compile Include="EndPoints.cs" />
     <Compile Include="LogManager.cs" />
     <Compile Include="OfficeRibbonManagerBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
