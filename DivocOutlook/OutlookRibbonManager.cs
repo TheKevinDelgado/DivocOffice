@@ -114,8 +114,13 @@ namespace DivocOutlook
                         case RibbonIDs.SAVE_MAIL:
                             SaveEmails(expl);
                             break;
+
                         case RibbonIDs.SAVE_ATTACHMENTS:
                             SaveAttachments(expl);
+                            break;
+
+                        case RibbonIDs.INSERT_ATTACHMENTS:
+                            InsertAttachments(expl.ActiveInlineResponse);
                             break;
                     }
                 }
@@ -134,18 +139,27 @@ namespace DivocOutlook
             // * Content manager will delete the temps
             if (expl.Selection.Count > 0 && expl.Selection[1] is Outlook.MailItem)
             {
-                string userTempPath = Path.GetTempPath();
-                List<KeyValuePair<string, string>> fileInfoList = new List<KeyValuePair<string, string>>();
+                string parentId = ThisAddIn.ContentManager.BrowseForLocation();
 
-                foreach (Outlook.MailItem item in expl.Selection)
+                if (!string.IsNullOrEmpty(parentId))
                 {
-                    string fileName = item.Subject + ".msg";
-                    string filePath = userTempPath + fileName;
-                    item.SaveAs(filePath, Outlook.OlSaveAsType.olMSGUnicode);
-                    fileInfoList.Add(new KeyValuePair<string, string>(fileName, filePath));
-                }
+                    string userTempPath = Path.GetTempPath();
+                    List<KeyValuePair<string, string>> fileInfoList = new List<KeyValuePair<string, string>>();
 
-                ThisAddIn.ContentManager.SaveDocumentsREST(fileInfoList);
+                    foreach (Outlook.MailItem item in expl.Selection)
+                    {
+                        string fileName = item.Subject + ".msg";
+
+                        // Possibly have invalid characters so fix that...
+                        fileName = Helpers.CleanFilename(fileName);
+
+                        string filePath = userTempPath + fileName;
+                        item.SaveAs(filePath, Outlook.OlSaveAsType.olMSGUnicode);
+                        fileInfoList.Add(new KeyValuePair<string, string>(fileName, filePath));
+                    }
+
+                    ThisAddIn.ContentManager.SaveDocuments(fileInfoList, parentId);
+                }
             }
         }
 
@@ -172,7 +186,7 @@ namespace DivocOutlook
                     }
                 }
 
-                ThisAddIn.ContentManager.SaveDocumentsREST(fileInfoList);
+                ThisAddIn.ContentManager.SaveDocuments(fileInfoList);
             }
         }
 
@@ -191,18 +205,7 @@ namespace DivocOutlook
                     switch (control.Id)
                     {
                         case RibbonIDs.INSERT_ATTACHMENTS:
-
-                            if (mail != null)
-                            {
-                                if (mail.Sent)
-                                {
-                                    // Inspector is in read mode
-                                }
-                                else
-                                {
-                                    // Inspector is in compose mode
-                                }
-                            }
+                            InsertAttachments(mail);
                             break;
 
                         case RibbonIDs.SAVE_ATTACHMENTS:
@@ -235,7 +238,16 @@ namespace DivocOutlook
                     fileInfoList.Add(new KeyValuePair<string, string>(fileName, filePath));
                 }
 
-                ThisAddIn.ContentManager.SaveDocumentsREST(fileInfoList);
+                ThisAddIn.ContentManager.SaveDocuments(fileInfoList);
+            }
+        }
+
+        private void InsertAttachments(Outlook.MailItem email)
+        {
+            string itemUrl = ThisAddIn.ContentManager.BrowseForItem();
+            if (!string.IsNullOrEmpty(itemUrl))
+            {
+                email.Attachments.Add(itemUrl);
             }
         }
 

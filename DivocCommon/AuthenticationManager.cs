@@ -134,7 +134,7 @@ namespace DivocCommon
                 {
                     authResult = await PublicClientApp.AcquireTokenInteractive(scopes)
                         .WithAccount(firstAccount)
-                        .WithParentActivityOrWindow(wnd) // optional, used to center the browser on the window
+                        //.WithParentActivityOrWindow(wnd) // optional, used to center the browser on the window
                         .WithPrompt(Prompt.SelectAccount)
                         .ExecuteAsync();
                 }

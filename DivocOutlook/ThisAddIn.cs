@@ -18,10 +18,9 @@ namespace DivocOutlook
         Dictionary<Guid, OLViewWrapperBase> _WrappedViews;
 
         static OutlookRibbonManager ribbonManager = null;
-        AuthenticationManager auth = new AuthenticationManager();
         public static ContentManager ContentManager { get; private set; }
 
-        private async void ThisAddIn_Startup(object sender, System.EventArgs e)
+        private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
             LogManager.LogMethod();
 
@@ -34,13 +33,11 @@ namespace DivocOutlook
             foreach(Outlook.Explorer expl in _explorers)
             {
                 WrapExplorer(expl);
-                await DoAuthenticate(expl);
             }
             // rare condition that an inspector can exist when addins are loaded, track those too
             foreach (Outlook.Inspector insp in _inspectors)
             {
                 WrapInspector(insp);
-                await DoAuthenticate(insp);
             }
 
             _explorers.NewExplorer += _explorers_NewExplorer;
@@ -49,23 +46,14 @@ namespace DivocOutlook
             ContentManager = new ContentManager();
         }
 
-        private async void _explorers_NewExplorer(Outlook.Explorer Explorer)
+        private void _explorers_NewExplorer(Outlook.Explorer Explorer)
         {
             WrapExplorer(Explorer);
-            await DoAuthenticate(Explorer);
         }
 
-        private async void _inspectors_NewInspector(Outlook.Inspector Inspector)
+        private void _inspectors_NewInspector(Outlook.Inspector Inspector)
         {
             WrapInspector(Inspector);
-            await DoAuthenticate(Inspector);
-        }
-
-        private async Task<bool> DoAuthenticate(Object view)
-        {
-            IntPtr wnd;
-            ((IOleWindow)view).GetWindow(out wnd);
-            return await auth.Authenticate(wnd);
         }
 
         void WrapExplorer(Outlook.Explorer explorer)
