@@ -8,6 +8,7 @@ using System.Text;
 using Office = Microsoft.Office.Core;
 using Word = Microsoft.Office.Interop.Word;
 using DivocCommon;
+using System.Windows.Forms;
 
 // TODO:  Follow these steps to enable the Ribbon (XML) item:
 
@@ -66,7 +67,7 @@ namespace DivocWord
 
         public override bool OnGetEnabled(Office.IRibbonControl control)
         {
-            bool enabled = true;
+            bool enabled = false;
 
             try
             {
@@ -74,6 +75,20 @@ namespace DivocWord
 
                 dynamic context = control.Context;
 
+                switch (control.Id)
+                {
+                    case RibbonIDs.SAVE_DOCUMENT:
+                        if (context != null)
+                        {
+                            enabled = true;
+                        }
+
+                        break;
+
+                    case RibbonIDs.OPEN_DOCUMENT:
+                        enabled = true;
+                        break;
+                }
             }
             catch (Exception ex)
             {
@@ -84,15 +99,107 @@ namespace DivocWord
         }
 
         public override void OnAction(Office.IRibbonControl control)
-        {          
-            switch(control.Id)
+        {     
+            try
             {
-                case RibbonIDs.SAVE_DOCUMENT:
-                    break;
+                switch (control.Id)
+                {
+                    case RibbonIDs.SAVE_DOCUMENT:
+                        Word.Document doc = control.Context.Document as Word.Document;
+                        SaveDocument(doc);
+                        break;
 
-                case RibbonIDs.OPEN_DOCUMENT:
-                    ThisAddIn.ContentManager.GetDocumentsREST();
-                    break;
+                    case RibbonIDs.OPEN_DOCUMENT:
+                        OpenDocument();
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogManager.LogException(ex);
+            }
+        }
+
+        #endregion
+
+        #region Internal Methods
+
+        private async void SaveDocument(Word.Document doc)
+        {
+            string fileName = string.Empty;
+
+            // Try to get a default name similar to how Word does natively:
+            // * Document title first (if populated from a template)
+            // * First sentence of first paragraph in the document (minus period)
+            // * Default file name if no title and empty content (Doc1.docx)
+            Office.DocumentProperties docProps = doc.BuiltInDocumentProperties;
+
+            // Try title...
+            if(docProps != null)
+            {
+                string title = docProps["title"]?.Value;
+                if (!string.IsNullOrEmpty(title))
+                    fileName = title;
+            }
+
+            // If title didn't work, try first sentence...
+            if(string.IsNullOrEmpty(fileName))
+            {
+                fileName = doc.Paragraphs?.First?.Range?.Sentences?.First?.Text?.Trim();
+            }
+
+            // If the document is empty, use the default document name.
+            // This will be Document1, etc, but Word itself will use
+            // the shorter form Doc1.docx in its save process. Note that
+            // we only get a name, not an extension. But, the save call
+            // will append the default extension. So, at the end we need 
+            // to ensure that we send along the actual file name with
+            // extension and path that as created.
+            if (string.IsNullOrEmpty(fileName))
+            {
+                fileName = doc.FullName;
+            }
+
+            // Possibly have invalid characters so fix that...
+            fileName = Helpers.CleanFilename(fileName);
+
+            string userTempPath = Path.GetTempPath();
+            string filePath = userTempPath + fileName;
+
+            string parentId = ThisAddIn.ContentManager.BrowseForLocation();
+
+            if(!string.IsNullOrEmpty(parentId))
+            {
+                List<KeyValuePair<string, string>> fileInfoList = new List<KeyValuePair<string, string>>();
+
+                doc.SaveAs2(filePath);
+
+                fileName = doc.Name;        // Making sure we have the for reals name
+                filePath = doc.FullName;    // Making sure we have the for reals path
+
+                doc.Close();
+
+                fileInfoList.Add(new KeyValuePair<string, string>(fileName, filePath));
+
+                List<string> urls = await ThisAddIn.ContentManager.SaveDocuments(fileInfoList, parentId);
+
+                foreach(string url in urls)
+                {
+                    ThisAddIn.Instance.Application.Documents.Open(url);
+                }
+            }
+        }
+
+        private void OpenDocument()
+        {
+            List<string> types = new List<string>();
+            types.Add(ItemMimeTypes.WORD_DOCUMENT);
+            types.Add(ItemMimeTypes.WORD_TEMPLATE);
+
+            string itemUrl = ThisAddIn.ContentManager.BrowseForItem(types);
+            if (!string.IsNullOrEmpty(itemUrl))
+            {
+                Word.Document opendoc = ThisAddIn.Instance.Application.Documents.Open(itemUrl);
             }
         }
 

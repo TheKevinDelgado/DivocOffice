@@ -66,7 +66,7 @@ namespace DivocPowerPoint
 
         public override bool OnGetEnabled(Office.IRibbonControl control)
         {
-            bool enabled = true;
+            bool enabled = false;
 
             try
             {
@@ -74,6 +74,20 @@ namespace DivocPowerPoint
 
                 dynamic context = control.Context;
 
+                switch (control.Id)
+                {
+                    case RibbonIDs.SAVE_PRESENTATION:
+                        if (context != null)
+                        {
+                            enabled = true;
+                        }
+
+                        break;
+
+                    case RibbonIDs.OPEN_PRESENTATION:
+                        enabled = true;
+                        break;
+                }
             }
             catch (Exception ex)
             {
@@ -85,13 +99,76 @@ namespace DivocPowerPoint
 
         public override void OnAction(Office.IRibbonControl control)
         {
-            switch (control.Id)
+            try
             {
-                case RibbonIDs.SAVE_PRESENTATION:
-                    break;
+                switch (control.Id)
+                {
+                    case RibbonIDs.SAVE_PRESENTATION:
+                        PowerPoint.Presentation pres = control.Context.Presentation as PowerPoint.Presentation;
+                        SavePresentation(pres);
+                        break;
 
-                case RibbonIDs.OPEN_PRESENTATION:
-                    break;
+                    case RibbonIDs.OPEN_PRESENTATION:
+                        OpenPresentation();
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogManager.LogException(ex);
+            }
+        }
+
+        #endregion
+
+        #region Internal Methods
+
+        private async void SavePresentation(PowerPoint.Presentation pres)
+        {
+            string fileName = string.Empty;
+
+            fileName = pres.Name;
+
+            // Possibly have invalid characters so fix that...
+            fileName = Helpers.CleanFilename(fileName);
+
+            string userTempPath = Path.GetTempPath();
+            string filePath = userTempPath + fileName;
+
+            string parentId = ThisAddIn.ContentManager.BrowseForLocation();
+
+            if (!string.IsNullOrEmpty(parentId))
+            {
+                List<KeyValuePair<string, string>> fileInfoList = new List<KeyValuePair<string, string>>();
+
+                pres.SaveAs(filePath);
+
+                fileName = pres.Name;        // Making sure we have the for reals name
+                filePath = pres.FullName;    // Making sure we have the for reals path
+
+                pres.Close();
+
+                fileInfoList.Add(new KeyValuePair<string, string>(fileName, filePath));
+
+                List<string> urls = await ThisAddIn.ContentManager.SaveDocuments(fileInfoList, parentId);
+
+                foreach (string url in urls)
+                {
+                    ThisAddIn.Instance.Application.Presentations.Open(url);
+                }
+            }
+        }
+
+        private void OpenPresentation()
+        {
+            List<string> types = new List<string>();
+            types.Add(ItemMimeTypes.PPT_PRESENTATION);
+            types.Add(ItemMimeTypes.PPT_TEMPLATE);
+
+            string itemUrl = ThisAddIn.ContentManager.BrowseForItem(types);
+            if (!string.IsNullOrEmpty(itemUrl))
+            {
+                PowerPoint.Presentation openpres = ThisAddIn.Instance.Application.Presentations.Open(itemUrl);
             }
         }
 

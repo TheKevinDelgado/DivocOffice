@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using Office = Microsoft.Office.Core;
+using Excel = Microsoft.Office.Interop.Excel;
 using DivocCommon;
 
 // TODO:  Follow these steps to enable the Ribbon (XML) item:
@@ -65,7 +66,7 @@ namespace DivocExcel
 
         public override bool OnGetEnabled(Office.IRibbonControl control)
         {
-            bool enabled = true;
+            bool enabled = false;
 
             try
             {
@@ -73,6 +74,20 @@ namespace DivocExcel
 
                 dynamic context = control.Context;
 
+                switch (control.Id)
+                {
+                    case RibbonIDs.SAVE_WORKBOOK:
+                        if (context != null)
+                        {
+                            enabled = true;
+                        }
+
+                        break;
+
+                    case RibbonIDs.OPEN_WORKBOOK:
+                        enabled = true;
+                        break;
+                }
             }
             catch (Exception ex)
             {
@@ -84,13 +99,86 @@ namespace DivocExcel
 
         public override void OnAction(Office.IRibbonControl control)
         {
-            switch (control.Id)
+            try
             {
-                case RibbonIDs.SAVE_WORKBOOK:
-                    break;
+                switch (control.Id)
+                {
+                    case RibbonIDs.SAVE_WORKBOOK:
+                        Excel.Application app = control.Context.Application as Excel.Application;
+                        Excel.Workbook book = app.ActiveWorkbook;
+                        SaveWorkbook(book);
+                        break;
 
-                case RibbonIDs.OPEN_WORKBOOK:
-                    break;
+                    case RibbonIDs.OPEN_WORKBOOK:
+                        OpenWorkbook();
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogManager.LogException(ex);
+            }
+        }
+
+        #endregion
+
+        #region Internal Methods
+
+        /// <summary>
+        /// Present user with location selection UI and save the workbook
+        /// </summary>
+        /// <notes>
+        /// When opening the webdav url after saving, it opens it in read-only mode.
+        /// Not sure if this is an excel issue or something on the sharepoint side, 
+        /// but so far only excel has this issue. Investigate.
+        /// </notes>
+        /// <param name="book">The workbook to save</param>
+        private async void SaveWorkbook(Excel.Workbook book)
+        {
+            string fileName = string.Empty;
+
+            fileName = book.Name;
+
+            // Possibly have invalid characters so fix that...
+            fileName = Helpers.CleanFilename(fileName);
+
+            string userTempPath = Path.GetTempPath();
+            string filePath = userTempPath + fileName;
+
+            string parentId = ThisAddIn.ContentManager.BrowseForLocation();
+
+            if (!string.IsNullOrEmpty(parentId))
+            {
+                List<KeyValuePair<string, string>> fileInfoList = new List<KeyValuePair<string, string>>();
+
+                book.SaveAs(filePath);
+
+                fileName = book.Name;        // Making sure we have the for reals name
+                filePath = book.FullName;    // Making sure we have the for reals path
+
+                book.Close();
+
+                fileInfoList.Add(new KeyValuePair<string, string>(fileName, filePath));
+
+                List<string> urls = await ThisAddIn.ContentManager.SaveDocuments(fileInfoList, parentId);
+
+                foreach (string url in urls)
+                {
+                    ThisAddIn.Instance.Application.Workbooks.Open(url);
+                }
+            }
+        }
+
+        private void OpenWorkbook()
+        {
+            List<string> types = new List<string>();
+            types.Add(ItemMimeTypes.EXCEL_SPREADSHEET);
+            types.Add(ItemMimeTypes.EXCEL_TEMPLATE);
+
+            string itemUrl = ThisAddIn.ContentManager.BrowseForItem(types);
+            if (!string.IsNullOrEmpty(itemUrl))
+            {
+                Excel.Workbook openwb = ThisAddIn.Instance.Application.Workbooks.Open(itemUrl);
             }
         }
 
