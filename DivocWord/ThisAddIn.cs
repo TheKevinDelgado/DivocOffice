@@ -9,28 +9,51 @@ namespace DivocWord
     public partial class ThisAddIn
     {
         static WordRibbonManager ribbonManager = null;
-        AuthenticationManager auth = new AuthenticationManager();
         public static ContentManager ContentManager { get; private set; }
+        public static ThisAddIn Instance { get; private set; }
 
-        private async void ThisAddIn_Startup(object sender, System.EventArgs e)
+        private Word.ApplicationEvents4_Event _AppEvents = null;
+
+        private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
             LogManager.LogMethod();
 
             // Set up Application event handlers...
-            Word.ApplicationEvents4_Event events = (Word.ApplicationEvents4_Event)this.Application;
-            events.DocumentOpen += Events_DocumentOpen;
-            events.NewDocument += Events_NewDocument;
+            _AppEvents = (Word.ApplicationEvents4_Event)this.Application;
+            _AppEvents.DocumentOpen += Events_DocumentOpen;
+            _AppEvents.NewDocument += Events_NewDocument;
 
-            await auth.Authenticate(IntPtr.Zero);
             ContentManager = new ContentManager();
+            Instance = this;
+        }
+
+        public static void InvalidateRibbon()
+        {
+            if (ribbonManager != null && ThisAddIn.ribbonManager.Ribbon != null)
+                ribbonManager.Ribbon.Invalidate();
         }
 
         private void Events_NewDocument(Word.Document Doc)
         {
+            Word.DocumentEvents2_Event docEvents = (Word.DocumentEvents2_Event)Doc;
+
+            docEvents.Close += Events_Close;
+
+            InvalidateRibbon();
+        }
+
+        private void Events_Close()
+        {
+            InvalidateRibbon();
         }
 
         private void Events_DocumentOpen(Word.Document Doc)
         {
+            Word.DocumentEvents2_Event docEvents = (Word.DocumentEvents2_Event)Doc;
+
+            docEvents.Close += Events_Close;
+
+            InvalidateRibbon();
         }
 
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)

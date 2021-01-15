@@ -52,24 +52,36 @@ namespace DivocCommon
         /// <summary>
         /// Get the children of a given item in a given drive
         /// </summary>
+        /// <notes>
+        /// The webDavUrl property is not included in the default property set, so
+        /// we are explicitely requesting it along with the defaults. We need the
+        /// webDavUrl in order for the desktop applications to open the file
+        /// from the drive
+        /// </notes>
         /// <param name="driveId">Id of the drive</param>
         /// <param name="parentId">Id of the parent item to query for children</param>
         /// <returns>Formatted string for the endpoint URL</returns>
         public static string ChildrenForItem(string driveId, string parentId)
         {
-            return string.Format("https://graph.microsoft.com/v1.0/drives/{0}/items/{1}/children", driveId, parentId);
+            return string.Format("https://graph.microsoft.com/v1.0/drives/{0}/items/{1}/children?select=*,webDavUrl", driveId, parentId);
         }
 
         /// <summary>
         /// Create a new item under the specified parent in the specified drive
         /// </summary>
+        /// <notes>
+        /// The webDavUrl property is not included in the default property set, so
+        /// we are explicitely requesting it along with the defaults. We need the
+        /// webDavUrl in order for the desktop applications to open the file
+        /// from the drive
+        /// </notes>
         /// <param name="driveId">Id of the drive</param>
         /// <param name="parentId">Id of the parent item to create the new item under</param>
         /// <param name="name">Name of the new item</param>
         /// <returns>Formatted string for the endpoint URL</returns>
         public static string NewItem(string driveId, string parentId, string name)
         {
-            return string.Format("https://graph.microsoft.com/v1.0/drives/{0}/items/{1}:/{2}:/content", driveId, parentId, name);
+            return string.Format("https://graph.microsoft.com/v1.0/drives/{0}/items/{1}:/{2}:/content?select=*,webDavUrl", driveId, parentId, name);
         }
 
         #endregion
