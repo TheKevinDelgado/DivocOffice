@@ -56,13 +56,20 @@
     <Compile Include="AuthenticationManager.cs" />
     <Compile Include="ContentManager.cs" />
     <Compile Include="DataModel\ActionInfo.cs" />
+    <Compile Include="DataModel\Teams\ChannelInfo.cs" />
+    <Compile Include="DataModel\Teams\ChannelMessageBody.cs" />
+    <Compile Include="DataModel\Teams\ChannelMessageInfo.cs" />
+    <Compile Include="DataModel\Teams\ChannelResultSet.cs" />
     <Compile Include="DataModel\DriveItem.cs" />
     <Compile Include="DataModel\FileInfo.cs" />
     <Compile Include="DataModel\FileSystemInfo.cs" />
     <Compile Include="DataModel\FolderInfo.cs" />
     <Compile Include="DataModel\ParentInfo.cs" />
-    <Compile Include="DataModel\ResultSet.cs" />
+    <Compile Include="DataModel\DriveItemResultSet.cs" />
     <Compile Include="DataModel\IdentityInfo.cs" />
+    <Compile Include="DataModel\ResultSetBase.cs" />
+    <Compile Include="DataModel\Teams\TeamInfo.cs" />
+    <Compile Include="DataModel\Teams\TeamResultSet.cs" />
     <Compile Include="DriveBrowserControl.xaml.cs">
       <DependentUpon>DriveBrowserControl.xaml</DependentUpon>
     </Compile>

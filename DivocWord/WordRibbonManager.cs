@@ -185,6 +185,9 @@ namespace DivocWord
 
                 foreach(string url in urls)
                 {
+                    // Attempt to send a message to Teams:
+                    string html = string.Format("A <a href='{0}'>new document</a> has been added!", url);
+                    ThisAddIn.ContentManager.SendMessageToTeams(html);
                     ThisAddIn.Instance.Application.Documents.Open(url);
                 }
             }
