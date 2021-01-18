@@ -7,10 +7,8 @@ using Newtonsoft.Json;
 
 namespace DivocCommon.DataModel
 {
-    public class ResultSet
+    public class DriveItemResultSet : ResultSetBase
     {
-        [JsonProperty("@odata.context")]
-        public string Context { get; set; }
         [JsonProperty("value")]
         public List<DriveItem> Items { get; set; }
     }

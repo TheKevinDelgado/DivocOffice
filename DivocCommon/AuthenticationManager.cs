@@ -92,7 +92,14 @@ namespace DivocCommon
             }
         }
 
-        string[] scopes = new string[] { "user.read", "files.readwrite.all" };
+        string[] scopes = new string[] 
+            {
+                "user.read", 
+                "files.readwrite.all",
+                "team.readbasic.all", 
+                "channel.readbasic.all",
+                "channelmessage.send"
+            };
 
         private static IPublicClientApplication _clientApp;
         public static IPublicClientApplication PublicClientApp { get { return _clientApp; } }
