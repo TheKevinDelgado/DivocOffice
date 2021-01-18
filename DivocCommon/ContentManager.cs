@@ -11,6 +11,7 @@ using System.Net.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using DivocCommon.DataModel;
+using DivocCommon.DataModel.Teams;
 using Forms = System.Windows.Forms;
 using System.Text.RegularExpressions;
 
@@ -43,6 +44,8 @@ namespace DivocCommon
         string rootItemId = string.Empty;   // id of the root item in the default drive of the default site of the tenant
         AuthenticationManager auth = new AuthenticationManager();
 
+        List<TeamInfo> _teams = null;
+
         public ContentManager()
         {
             try
@@ -55,10 +58,112 @@ namespace DivocCommon
             }
         }
 
+        /// <summary>
+        /// Initialization, including authentication.
+        /// </summary>
+        /// <notes>
+        /// For fun, we're going to add some rudimentary MSTeams integration.
+        /// </notes>
         private async void Init()
         {
             await auth.Authenticate(IntPtr.Zero);
             rootItemId = await GetTenantRootREST();
+            _teams = await GetUsersTeams();
+
+            foreach(TeamInfo info in _teams)
+            {
+                info.Channels = await GetChannelsForTeam(info.id);
+            }
+        }
+
+        /// <summary>
+        /// Get all of the Teams the user is a member of.
+        /// </summary>
+        /// <returns>List of <see cref="T:DivocCommon.DataModel.TeamInfo">TeamInfo</see> objects found</returns>
+        private async Task<List<TeamInfo>> GetUsersTeams()
+        {
+            List<TeamInfo> teams = null;
+
+            var httpClient = new HttpClient();
+            HttpResponseMessage response;
+            try
+            {
+                var request = new HttpRequestMessage(HttpMethod.Get, EndPoints.JoinedTeams);
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthenticationManager.AccessToken);
+                response = await httpClient.SendAsync(request);
+                string strContent = await response.Content.ReadAsStringAsync();
+
+                TeamResultSet results = (TeamResultSet)JsonConvert.DeserializeObject(strContent, typeof(TeamResultSet));
+                teams = results.Items;
+            }
+            catch (Exception ex)
+            {
+                LogManager.LogException(ex);
+            }
+
+            return teams;
+        }
+
+        /// <summary>
+        /// Get all of the channels for a given team.
+        /// </summary>
+        /// <param name="teamId"></param>
+        /// <returns>List of <see cref="T:DivocCommon.DataModel.ChannelInfo">ChannelInfo</see> objects found</returns>
+        private async Task<List<ChannelInfo>> GetChannelsForTeam(string teamId)
+        {
+            List<ChannelInfo> channels = null;
+
+            var httpClient = new HttpClient();
+            HttpResponseMessage response;
+            try
+            {
+                var request = new HttpRequestMessage(HttpMethod.Get, EndPoints.ChannelsForTeam(teamId));
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthenticationManager.AccessToken);
+                response = await httpClient.SendAsync(request);
+                string strContent = await response.Content.ReadAsStringAsync();
+
+                ChannelResultSet results = (ChannelResultSet)JsonConvert.DeserializeObject(strContent, typeof(ChannelResultSet));
+                channels = results.Items;
+            }
+            catch (Exception ex)
+            {
+                LogManager.LogException(ex);
+            }
+
+            return channels;
+        }
+
+        /// <summary>
+        /// Just for fun, send a message to the user's first team and first channel
+        /// </summary>
+        /// <param name="message"></param>
+        public async void SendMessageToTeams(string message)
+        {
+            try
+            {
+                if(_teams.Count > 0 && _teams[0].Channels.Count > 0)
+                {
+                    HttpResponseMessage response;
+
+                    using (var httpClient = new HttpClient())
+                    {
+                        httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + AuthenticationManager.AccessToken);
+
+                        ChannelMessageInfo msg = new ChannelMessageInfo();
+                        msg.body = new ChannelMessageBody();
+                        msg.body.contentType = "html";
+                        msg.body.content = message;
+                        StringContent content = new StringContent(JsonConvert.SerializeObject(msg), Encoding.UTF8, "application/json");
+
+                        response = await httpClient.PostAsync(EndPoints.MessageToChannel(_teams[0].id, _teams[0].Channels[0].id), content);
+                        string strContent = await response.Content.ReadAsStringAsync();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogManager.LogException(ex);
+            }
         }
 
         /// <summary>
@@ -179,7 +284,7 @@ namespace DivocCommon
                 request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthenticationManager.AccessToken);
                 response = await httpClient.SendAsync(request);
                 string strContent = await response.Content.ReadAsStringAsync();
-                ResultSet results = (ResultSet)JsonConvert.DeserializeObject(strContent, typeof(ResultSet));
+                DriveItemResultSet results = (DriveItemResultSet)JsonConvert.DeserializeObject(strContent, typeof(DriveItemResultSet));
 
                 items = results.Items.Where(i => (i.folder != null) || ((fileTypes != null) ? fileTypes.Contains(i.file.mimeType) : (i.file != null))).ToList();
             }
@@ -245,7 +350,9 @@ namespace DivocCommon
                                 DriveItem newItem = (DriveItem)JsonConvert.DeserializeObject(strContent, typeof(DriveItem));
 
                                 if (newItem != null)
+                                {
                                     items.Add(newItem);
+                                }
                             }
                         }
                     }

@@ -35,6 +35,7 @@ namespace DivocCommon
         /// </summary>
         public static string DefaultSiteDefaultDriveRootItem { get { return "https://graph.microsoft.com/v1.0/sites/root/drive/root"; } }
 
+        public static string JoinedTeams { get { return "https://graph.microsoft.com/v1.0/me/joinedTeams"; } }
         #endregion
 
         #region Methods
@@ -82,6 +83,16 @@ namespace DivocCommon
         public static string NewItem(string driveId, string parentId, string name)
         {
             return string.Format("https://graph.microsoft.com/v1.0/drives/{0}/items/{1}:/{2}:/content?select=*,webDavUrl", driveId, parentId, name);
+        }
+
+        public static string ChannelsForTeam(string teamId)
+        {
+            return string.Format("https://graph.microsoft.com/v1.0/teams/{0}/channels", teamId);
+        }
+
+        public static string MessageToChannel(string teamId, string channelId)
+        {
+            return string.Format("https://graph.microsoft.com/v1.0/teams/{0}/channels/{1}/messages", teamId, channelId);
         }
 
         #endregion
