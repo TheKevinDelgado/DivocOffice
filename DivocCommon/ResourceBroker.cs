@@ -33,6 +33,11 @@ namespace DivocCommon
 
             OPEN_LABEL,
             OPEN_IMAGE,
+
+            EMAIL_LINKS_BLOCK_TEMPLATE,
+
+            UPLOAD_AND_LINK_PROMPT,
+            UPLOAD_AND_LINK_CAPTION,
         }
            
         public static string GetString(ResourceID id)
@@ -59,6 +64,18 @@ namespace DivocCommon
 
                 case ResourceID.OPEN_LABEL:
                     str = Properties.Resource.OpenLabel;
+                    break;
+
+                case ResourceID.EMAIL_LINKS_BLOCK_TEMPLATE:
+                    str = Properties.Resource.emailLinksBlockTemplate;
+                    break;
+
+                case ResourceID.UPLOAD_AND_LINK_PROMPT:
+                    str = Properties.Resource.UploadAndLinkPrompt;
+                    break;
+
+                case ResourceID.UPLOAD_AND_LINK_CAPTION:
+                    str = Properties.Resource.UploadAndLinkCaption;
                     break;
             }
 
