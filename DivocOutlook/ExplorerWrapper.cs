@@ -5,12 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using Outlook = Microsoft.Office.Interop.Outlook;
 using DivocCommon;
+using System.Windows.Forms;
 
 namespace DivocOutlook
 {
-    class ExplorerWrapper : OLViewWrapperBase
+    class ExplorerWrapper : OLViewWrapperBase, IWin32Window
     {
         public Outlook.Explorer Explorer { get; private set; }
+
+        AttachmentsHandler _attachmentsHandler = null;
+        Outlook.MailItem _email = null;
 
         public ExplorerWrapper(Outlook.Explorer explorer)
         {
@@ -27,6 +31,50 @@ namespace DivocOutlook
             ((Outlook.ExplorerEvents_10_Event)Explorer).Activate += ExplorerWrapper_Activate;
             Explorer.Deactivate += ExplorerWrapper_Deactivate;
             Explorer.SelectionChange += Explorer_SelectionChange;
+            ((Outlook.ExplorerEvents_10_Event)Explorer).InlineResponse += ExplorerWrapper_InlineResponse;
+            ((Outlook.ExplorerEvents_10_Event)Explorer).InlineResponseClose += ExplorerWrapper_InlineResponseClose;
+        }
+
+        public IntPtr Handle
+        {
+            get
+            {
+                IntPtr wnd;
+                ((IOleWindow)this).GetWindow(out wnd);
+                return wnd;
+            }
+        }
+
+        private void ExplorerWrapper_InlineResponse(object Item)
+        {
+            // Item should be the same object as Explorer.ActiveInlineResponse.
+            // Use that in the send handler to manipulate the email we create here.
+            if(Item is Outlook.MailItem)
+            {
+                _email = Item as Outlook.MailItem;
+
+                _attachmentsHandler = new AttachmentsHandler(this, ref _email);
+
+                Outlook.MailItem email = Item as Outlook.MailItem;
+
+                ((Outlook.ItemEvents_10_Event)_email).Send += ExplorerWrapper_Send;
+            }
+        }
+
+        private void ExplorerWrapper_InlineResponseClose()
+        {
+            _email = null;
+            _attachmentsHandler = null;
+
+            ((Outlook.ItemEvents_10_Event)Explorer.ActiveInlineResponse).Send -= ExplorerWrapper_Send;
+        }
+
+        private void ExplorerWrapper_Send(ref bool Cancel)
+        {
+            if (_attachmentsHandler != null)
+            {
+                Cancel = _attachmentsHandler.UploadAndLink();
+            }
         }
 
         void RemoveEventHandlers()

@@ -297,6 +297,34 @@ namespace DivocCommon
         }
 
         /// <summary>
+        /// Perform a save operation with UI showing progress and allowing user cancellation.
+        /// </summary>
+        /// <notes>
+        /// First pass for UI feedback mentioned in TODO for SaveDocumentsREST below.
+        /// 
+        /// This, along with SaveDocuments, gives the flexibility of doing the save operation with or
+        /// without UI. In some cases, such as the Send event handler in Outlook Inspector, the 
+        /// headless version can get 'lost' due to threading limitations (can't put 'async' on a
+        /// method with a ref parameter, which makes the syncronizationcontext stuff not work).
+        /// </notes>
+        /// <param name="fileInfoList">List of KeyValuePairs [file name - file path on disk]</param>
+        /// <param name="parentId">Id of the parent item to save the documents under</param>
+        /// <returns>List of WebDav Urls for objects saved</returns>
+        public List<(string, string)> SaveWithProgress(List<KeyValuePair<string, string>> fileInfoList, string parentId = "")
+        {
+            List<(string, string)> webDavUrls = null;
+
+            SaveWithProgressForm saveDlg = new SaveWithProgressForm(this, fileInfoList, parentId);
+
+            if (Forms.DialogResult.OK == saveDlg.ShowDialog())
+            {
+                webDavUrls = saveDlg.WebDavUrls;
+            }
+
+            return webDavUrls;
+        }
+
+        /// <summary>
         /// Upload documents to the drive
         /// </summary>
         /// <notes>
@@ -304,14 +332,14 @@ namespace DivocCommon
         /// </notes>
         /// <param name="fileInfoList">List of KeyValuePairs [file name - file path on disk]</param>
         /// <param name="parentId">Id of the parent item to save the documents under</param>
-        /// <returns>List of WebDav Urls for objects found</returns>
-        public async Task<List<string>> SaveDocuments(List<KeyValuePair<string, string>> fileInfoList, string parentId = "")
+        /// <returns>List of WebDav Urls for objects saved</returns>
+        public async Task<List<(string, string)>> SaveDocuments(List<KeyValuePair<string, string>> fileInfoList, string parentId = "", IProgress<KeyValuePair<int, string>> progress = null)
         {
-            List<string> webDavUrls = new List<string>();
+            List<(string, string)> webDavUrls = new List<(string, string)>();
 
-            List<DriveItem> items = await SaveDocumentsREST(fileInfoList, parentId);
+            List<DriveItem> items = await SaveDocumentsREST(fileInfoList, parentId, progress);
 
-            items.ForEach(item => webDavUrls.Add(item.webDavUrl));
+            items.ForEach(item => webDavUrls.Add((item.name, item.webDavUrl)));
 
             return webDavUrls;
         }
@@ -325,8 +353,19 @@ namespace DivocCommon
         /// </TODO>
         /// <param name="fileInfoList">List of KeyValuePairs [file name - file path on disk]</param>
         /// <param name="parentId">Id of the parent item to save the documents under</param>
-        protected async Task<List<DriveItem>> SaveDocumentsREST(List<KeyValuePair<string, string>> fileInfoList, string parentId = "")
+        protected async Task<List<DriveItem>> SaveDocumentsREST(List<KeyValuePair<string, string>> fileInfoList, string parentId = "", IProgress<KeyValuePair<int, string>> progress = null)
         {
+            // Local function to deal with reporting progress if optional progress handler was passed in
+            void ReportProgress(IProgress<KeyValuePair<int, string>> prog, int val, string name = "")
+            {
+                if(prog != null)
+                {
+                    prog.Report(new KeyValuePair<int, string>(val, name));
+                }
+            }
+
+            int filesSaved = 0;
+
             List<DriveItem> items = new List<DriveItem>();
 
             HttpResponseMessage response;
@@ -352,6 +391,8 @@ namespace DivocCommon
                                 if (newItem != null)
                                 {
                                     items.Add(newItem);
+
+                                    ReportProgress(progress, ++filesSaved, newItem.name);
                                 }
                             }
                         }
@@ -367,6 +408,8 @@ namespace DivocCommon
                         LogManager.LogException(fileEx);
                     }
                 }
+
+                ReportProgress(progress, -1);
             }
             catch (Exception ex)
             {

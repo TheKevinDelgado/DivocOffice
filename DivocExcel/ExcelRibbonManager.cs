@@ -160,11 +160,11 @@ namespace DivocExcel
 
                 fileInfoList.Add(new KeyValuePair<string, string>(fileName, filePath));
 
-                List<string> urls = await ThisAddIn.ContentManager.SaveDocuments(fileInfoList, parentId);
+                List<(string, string)> savedItems = await ThisAddIn.ContentManager.SaveDocuments(fileInfoList, parentId);
 
-                foreach (string url in urls)
+                foreach ((string name, string webDavUrl) item in savedItems)
                 {
-                    ThisAddIn.Instance.Application.Workbooks.Open(url);
+                    ThisAddIn.Instance.Application.Workbooks.Open(item.webDavUrl);
                 }
             }
         }

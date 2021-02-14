@@ -185,6 +185,7 @@
     can be found.
   -->
   <ItemGroup>
+    <Compile Include="AttachmentsHandler.cs" />
     <Compile Include="ExplorerWrapper.cs" />
     <Compile Include="InspectorWrapper.cs" />
     <Compile Include="OLViewWrapperBase.cs" />

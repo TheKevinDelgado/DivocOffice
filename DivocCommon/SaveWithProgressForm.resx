@@ -117,44 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="emailLinksBlockTemplate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\emailLinksBlockTemplate.html;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
-  <data name="InsertAttachmentsIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\InsertAttachments.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="InsertAttachmentsLabel" xml:space="preserve">
-    <value>Insert Attachments</value>
-  </data>
-  <data name="OpenIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Open.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="OpenLabel" xml:space="preserve">
-    <value>Open</value>
-  </data>
-  <data name="ProductLogo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ProductLogo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ProductName" xml:space="preserve">
-    <value>Divoc</value>
-  </data>
-  <data name="SaveAttachmentsIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\SaveAttachments.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="SaveAttachmentsLabel" xml:space="preserve">
-    <value>Save Attachments</value>
-  </data>
-  <data name="SaveIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\SaveMail.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="SaveLabel" xml:space="preserve">
-    <value>Save</value>
-  </data>
-  <data name="UploadAndLinkCaption" xml:space="preserve">
-    <value>Upload and Link</value>
-  </data>
-  <data name="UploadAndLinkPrompt" xml:space="preserve">
-    <value>Would you like to upload the attachments to Divoc and send links instead?</value>
-  </data>
 </root>

@@ -42,6 +42,8 @@ namespace DivocCommon
             _fileTypes = fileTypes;
             _location = location;
             browser = elementHostDriveBrowser.Child as DriveBrowserControl;
+
+            StartPosition = FormStartPosition.CenterParent;
         }
 
         private void OpenForm_Load(object sender, EventArgs e)

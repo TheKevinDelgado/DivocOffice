@@ -181,14 +181,14 @@ namespace DivocWord
 
                 fileInfoList.Add(new KeyValuePair<string, string>(fileName, filePath));
 
-                List<string> urls = await ThisAddIn.ContentManager.SaveDocuments(fileInfoList, parentId);
+                List<(string, string)> savedItems = await ThisAddIn.ContentManager.SaveDocuments(fileInfoList, parentId);
 
-                foreach(string url in urls)
+                foreach((string name, string webDavUrl) item in savedItems)
                 {
                     // Attempt to send a message to Teams:
-                    string html = string.Format("A <a href='{0}'>new document</a> has been added!", url);
+                    string html = string.Format("A <a href='{0}'>new document</a> has been added!", item.webDavUrl);
                     ThisAddIn.ContentManager.SendMessageToTeams(html);
-                    ThisAddIn.Instance.Application.Documents.Open(url);
+                    ThisAddIn.Instance.Application.Documents.Open(item.webDavUrl);
                 }
             }
         }
