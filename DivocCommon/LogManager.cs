@@ -24,6 +24,7 @@ namespace DivocCommon
             _log = new LoggerConfiguration()
                    .MinimumLevel.Debug()
                    .WriteTo.Console()
+                   .WriteTo.Debug()
                    //.WriteTo.File(string.Format("logs\\{0} [Verbose].log", name), restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Verbose, rollingInterval: RollingInterval.Day)    // Ha ha no don't do this
                    .WriteTo.File(string.Format("logs\\{0} [Debug].log", name), restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Debug, rollingInterval: RollingInterval.Day)
                    .WriteTo.File(string.Format("logs\\{0} [Information].log", name), restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information, rollingInterval: RollingInterval.Day)
