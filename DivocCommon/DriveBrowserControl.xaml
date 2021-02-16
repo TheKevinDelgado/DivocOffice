@@ -15,34 +15,34 @@
                         <Style TargetType="Image">
                             <Setter Property="Source" Value="Resources/folder.png"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=File.mimeType}" Value="{x:Static local:ItemMimeTypes.WORD_DOCUMENT}">
+                                <DataTrigger Binding="{Binding Path=File.MimeType}" Value="{x:Static local:ItemMimeTypes.WORD_DOCUMENT}">
                                     <Setter Property="Source" Value="Resources/docx.png"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=File.mimeType}" Value="{x:Static local:ItemMimeTypes.WORD_TEMPLATE}">
+                                <DataTrigger Binding="{Binding Path=File.MimeType}" Value="{x:Static local:ItemMimeTypes.WORD_TEMPLATE}">
                                     <Setter Property="Source" Value="Resources/docx.png"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=File.mimeType}" Value="{x:Static local:ItemMimeTypes.EXCEL_SPREADSHEET}">
+                                <DataTrigger Binding="{Binding Path=File.MimeType}" Value="{x:Static local:ItemMimeTypes.EXCEL_SPREADSHEET}">
                                     <Setter Property="Source" Value="Resources/xlsx.png"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=File.mimeType}" Value="{x:Static local:ItemMimeTypes.EXCEL_TEMPLATE}">
+                                <DataTrigger Binding="{Binding Path=File.MimeType}" Value="{x:Static local:ItemMimeTypes.EXCEL_TEMPLATE}">
                                     <Setter Property="Source" Value="Resources/xlsx.png"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=File.mimeType}" Value="{x:Static local:ItemMimeTypes.PPT_PRESENTATION}">
+                                <DataTrigger Binding="{Binding Path=File.MimeType}" Value="{x:Static local:ItemMimeTypes.PPT_PRESENTATION}">
                                     <Setter Property="Source" Value="Resources/pptx.png"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=File.mimeType}" Value="{x:Static local:ItemMimeTypes.PPT_TEMPLATE}">
+                                <DataTrigger Binding="{Binding Path=File.MimeType}" Value="{x:Static local:ItemMimeTypes.PPT_TEMPLATE}">
                                     <Setter Property="Source" Value="Resources/pptx.png"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=File.mimeType}" Value="{x:Static local:ItemMimeTypes.PPT_SLIDESHOW}">
+                                <DataTrigger Binding="{Binding Path=File.MimeType}" Value="{x:Static local:ItemMimeTypes.PPT_SLIDESHOW}">
                                     <Setter Property="Source" Value="Resources/pptx.png"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=File.mimeType}" Value="{x:Static local:ItemMimeTypes.OUTLOOK_MESSAGE}">
+                                <DataTrigger Binding="{Binding Path=File.MimeType}" Value="{x:Static local:ItemMimeTypes.OUTLOOK_MESSAGE}">
                                     <Setter Property="Source" Value="Resources/email.png"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=File.mimeType}" Value="{x:Static local:ItemMimeTypes.PDF}">
+                                <DataTrigger Binding="{Binding Path=File.MimeType}" Value="{x:Static local:ItemMimeTypes.PDF}">
                                     <Setter Property="Source" Value="Resources/pdf.png"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=File.mimeType}" Value="{x:Static local:ItemMimeTypes.URL}">
+                                <DataTrigger Binding="{Binding Path=File.MimeType}" Value="{x:Static local:ItemMimeTypes.URL}">
                                     <Setter Property="Source" Value="Resources/link.png"/>
                                 </DataTrigger>
                             </Style.Triggers>
