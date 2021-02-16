@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace DivocCommon.DataModel
 {
     public class ActionInfo
     {
-        public IdentityInfo user { get; set; }
+        [JsonProperty("user")]
+        public IdentityInfo User { get; set; }
     }
 }

@@ -43,7 +43,7 @@ namespace DivocExcel
         {
             LogManager.LogMethod(string.Format("Ribbon Id: {0}", ribbonID));
 
-            string ribbonUI = null;
+            string ribbonUI;
 
             switch (ribbonID)
             {
@@ -133,11 +133,9 @@ namespace DivocExcel
         /// but so far only excel has this issue. Investigate.
         /// </notes>
         /// <param name="book">The workbook to save</param>
-        private async void SaveWorkbook(Excel.Workbook book)
+        private static async void SaveWorkbook(Excel.Workbook book)
         {
-            string fileName = string.Empty;
-
-            fileName = book.Name;
+            string fileName = book.Name;
 
             // Possibly have invalid characters so fix that...
             fileName = Helpers.CleanFilename(fileName);
@@ -162,23 +160,25 @@ namespace DivocExcel
 
                 List<(string, string)> savedItems = await ThisAddIn.ContentManager.SaveDocuments(fileInfoList, parentId);
 
-                foreach ((string name, string webDavUrl) item in savedItems)
+                foreach ((_, string webDavUrl) in savedItems)
                 {
-                    ThisAddIn.Instance.Application.Workbooks.Open(item.webDavUrl);
+                    ThisAddIn.Instance.Application.Workbooks.Open(webDavUrl);
                 }
             }
         }
 
-        private void OpenWorkbook()
+        private static void OpenWorkbook()
         {
-            List<string> types = new List<string>();
-            types.Add(ItemMimeTypes.EXCEL_SPREADSHEET);
-            types.Add(ItemMimeTypes.EXCEL_TEMPLATE);
+            List<string> types = new List<string>
+            {
+                ItemMimeTypes.EXCEL_SPREADSHEET,
+                ItemMimeTypes.EXCEL_TEMPLATE
+            };
 
             string itemUrl = ThisAddIn.ContentManager.BrowseForItem(types);
             if (!string.IsNullOrEmpty(itemUrl))
             {
-                Excel.Workbook openwb = ThisAddIn.Instance.Application.Workbooks.Open(itemUrl);
+                _ = ThisAddIn.Instance.Application.Workbooks.Open(itemUrl);
             }
         }
 

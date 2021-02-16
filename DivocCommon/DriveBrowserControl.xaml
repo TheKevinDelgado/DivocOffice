@@ -15,29 +15,41 @@
                         <Style TargetType="Image">
                             <Setter Property="Source" Value="Resources/folder.png"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=file.mimeType}" Value="{x:Static local:ItemMimeTypes.WORD_DOCUMENT}">
+                                <DataTrigger Binding="{Binding Path=File.mimeType}" Value="{x:Static local:ItemMimeTypes.WORD_DOCUMENT}">
                                     <Setter Property="Source" Value="Resources/docx.png"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=file.mimeType}" Value="{x:Static local:ItemMimeTypes.EXCEL_SPREADSHEET}">
+                                <DataTrigger Binding="{Binding Path=File.mimeType}" Value="{x:Static local:ItemMimeTypes.WORD_TEMPLATE}">
+                                    <Setter Property="Source" Value="Resources/docx.png"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=File.mimeType}" Value="{x:Static local:ItemMimeTypes.EXCEL_SPREADSHEET}">
                                     <Setter Property="Source" Value="Resources/xlsx.png"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=file.mimeType}" Value="{x:Static local:ItemMimeTypes.PPT_PRESENTATION}">
+                                <DataTrigger Binding="{Binding Path=File.mimeType}" Value="{x:Static local:ItemMimeTypes.EXCEL_TEMPLATE}">
+                                    <Setter Property="Source" Value="Resources/xlsx.png"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=File.mimeType}" Value="{x:Static local:ItemMimeTypes.PPT_PRESENTATION}">
                                     <Setter Property="Source" Value="Resources/pptx.png"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=file.mimeType}" Value="{x:Static local:ItemMimeTypes.OUTLOOK_MESSAGE}">
+                                <DataTrigger Binding="{Binding Path=File.mimeType}" Value="{x:Static local:ItemMimeTypes.PPT_TEMPLATE}">
+                                    <Setter Property="Source" Value="Resources/pptx.png"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=File.mimeType}" Value="{x:Static local:ItemMimeTypes.PPT_SLIDESHOW}">
+                                    <Setter Property="Source" Value="Resources/pptx.png"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=File.mimeType}" Value="{x:Static local:ItemMimeTypes.OUTLOOK_MESSAGE}">
                                     <Setter Property="Source" Value="Resources/email.png"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=file.mimeType}" Value="{x:Static local:ItemMimeTypes.PDF}">
+                                <DataTrigger Binding="{Binding Path=File.mimeType}" Value="{x:Static local:ItemMimeTypes.PDF}">
                                     <Setter Property="Source" Value="Resources/pdf.png"/>
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=file.mimeType}" Value="{x:Static local:ItemMimeTypes.URL}">
+                                <DataTrigger Binding="{Binding Path=File.mimeType}" Value="{x:Static local:ItemMimeTypes.URL}">
                                     <Setter Property="Source" Value="Resources/link.png"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Image.Style>
                 </Image>
-                <TextBlock Text="{Binding name}" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Margin="5,0,0,0"/>
             </StackPanel>
         </DataTemplate>
     </UserControl.Resources>
@@ -47,11 +59,13 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <ListView x:Name="listItems" Grid.Row="0" ItemsSource="{Binding Items}" SelectionChanged="listItems_SelectionChanged" ItemTemplate="{StaticResource DriveItemTemplate}" SelectionMode="Single" MouseDoubleClick="listItems_MouseDoubleClick">
+            <ListView x:Name="listItems" Grid.Row="0" ItemsSource="{Binding Items}" SelectionChanged="ListItems_SelectionChanged" ItemTemplate="{StaticResource DriveItemTemplate}" SelectionMode="Single" MouseDoubleClick="ListItems_MouseDoubleClick">
             </ListView>
+            <Button Grid.Row="1" x:Name="upBtn" Width="30" Content="Up" HorizontalAlignment="Left" Click="UpBtn_Click" Visibility="Hidden">
+            </Button>
             <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Height="40">
-                <Button x:Name="openBtn" Content="Open" HorizontalAlignment="Left" Width="130" IsDefault="True" Height="35" IsEnabled="False" Click="openBtn_Click"/>
-                <Button x:Name="cancelBtn" Content="Cancel" HorizontalAlignment="Left" Height="35"  Width="130" IsCancel="True" Margin="5,0,0,0" Click="cancelBtn_Click" />
+                <Button x:Name="openBtn" Content="Open" HorizontalAlignment="Left" Width="130" IsDefault="True" Height="35" IsEnabled="False" Click="OpenBtn_Click"/>
+                <Button x:Name="cancelBtn" Content="Cancel" HorizontalAlignment="Left" Height="35"  Width="130" IsCancel="True" Margin="5,0,0,0" Click="CancelBtn_Click" />
             </StackPanel>
         </Grid>
     </Grid>

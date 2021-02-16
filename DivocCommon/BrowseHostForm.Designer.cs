@@ -29,6 +29,7 @@ namespace DivocCommon
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BrowseHostForm));
             this.elementHostDriveBrowser = new System.Windows.Forms.Integration.ElementHost();
             this.driveBrowserControl = new DivocCommon.DriveBrowserControl();
             this.SuspendLayout();
@@ -51,6 +52,7 @@ namespace DivocCommon
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.elementHostDriveBrowser);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "BrowseHostForm";
             this.Text = "Open";
             this.Load += new System.EventHandler(this.OpenForm_Load);

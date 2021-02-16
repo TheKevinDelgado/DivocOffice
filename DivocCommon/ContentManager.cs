@@ -40,9 +40,12 @@ namespace DivocCommon
     /// </TODO>
     public class ContentManager
     {
-        string rootDriveId = string.Empty;  // id of the default drive of the default site of the tenant
-        string rootItemId = string.Empty;   // id of the root item in the default drive of the default site of the tenant
-        AuthenticationManager auth = new AuthenticationManager();
+        /// <summary>
+        /// Root item in the default drive of the default site of the tenant.
+        /// </summary>
+        public DriveItem Root { get; private set; }
+
+        readonly AuthenticationManager auth = new AuthenticationManager();
 
         List<TeamInfo> _teams = null;
 
@@ -67,7 +70,7 @@ namespace DivocCommon
         private async void Init()
         {
             await auth.Authenticate(IntPtr.Zero);
-            rootItemId = await GetTenantRootREST();
+            Root = await GetTenantRootREST();
             _teams = await GetUsersTeams();
 
             foreach(TeamInfo info in _teams)
@@ -80,7 +83,7 @@ namespace DivocCommon
         /// Get all of the Teams the user is a member of.
         /// </summary>
         /// <returns>List of <see cref="T:DivocCommon.DataModel.TeamInfo">TeamInfo</see> objects found</returns>
-        private async Task<List<TeamInfo>> GetUsersTeams()
+        private static async Task<List<TeamInfo>> GetUsersTeams()
         {
             List<TeamInfo> teams = null;
 
@@ -109,7 +112,7 @@ namespace DivocCommon
         /// </summary>
         /// <param name="teamId"></param>
         /// <returns>List of <see cref="T:DivocCommon.DataModel.ChannelInfo">ChannelInfo</see> objects found</returns>
-        private async Task<List<ChannelInfo>> GetChannelsForTeam(string teamId)
+        private static async Task<List<ChannelInfo>> GetChannelsForTeam(string teamId)
         {
             List<ChannelInfo> channels = null;
 
@@ -149,10 +152,15 @@ namespace DivocCommon
                     {
                         httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + AuthenticationManager.AccessToken);
 
-                        ChannelMessageInfo msg = new ChannelMessageInfo();
-                        msg.body = new ChannelMessageBody();
-                        msg.body.contentType = "html";
-                        msg.body.content = message;
+                        ChannelMessageInfo msg = new ChannelMessageInfo
+                        {
+                            body = new ChannelMessageBody
+                            {
+                                contentType = "html",
+                                content = message
+                            }
+                        };
+
                         StringContent content = new StringContent(JsonConvert.SerializeObject(msg), Encoding.UTF8, "application/json");
 
                         response = await httpClient.PostAsync(EndPoints.MessageToChannel(_teams[0].id, _teams[0].Channels[0].id), content);
@@ -215,7 +223,7 @@ namespace DivocCommon
                 itemId = browse.ItemId;
 
                 if (string.IsNullOrEmpty(itemId))
-                    itemId = rootItemId;
+                    itemId = Root.Id;
             }
 
             return itemId;
@@ -232,9 +240,9 @@ namespace DivocCommon
         /// the one they want to use from the available drives/lists on the site.
         /// </notes>
         /// <returns>The id of the root item in the default drive of the default site</returns>
-        private async Task<string> GetTenantRootREST()
+        private static async Task<DriveItem> GetTenantRootREST()
         {
-            string root = string.Empty;
+            DriveItem root = null;
             var httpClient = new HttpClient();
             HttpResponseMessage response;
             try
@@ -244,9 +252,7 @@ namespace DivocCommon
                 request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthenticationManager.AccessToken);
                 response = await httpClient.SendAsync(request);
                 string strContent = await response.Content.ReadAsStringAsync();
-                dynamic content = JsonConvert.DeserializeObject(strContent);
-                root = content.id;
-                rootDriveId = content.parentReference.driveId;
+                root = (DriveItem)JsonConvert.DeserializeObject(strContent, typeof(DriveItem));
             }
             catch (Exception ex)
             {
@@ -279,14 +285,14 @@ namespace DivocCommon
             try
             {
                 // Default to the root item in the root drive if parentId is empty
-                var request = new HttpRequestMessage(HttpMethod.Get, EndPoints.ChildrenForItem(rootDriveId, (parentId.Length > 0) ? parentId : rootItemId));
+                var request = new HttpRequestMessage(HttpMethod.Get, EndPoints.ChildrenForItem(Root.ParentReference.DriveId, (parentId.Length > 0) ? parentId : Root.Id));
                 //Add the token in Authorization header
                 request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthenticationManager.AccessToken);
                 response = await httpClient.SendAsync(request);
                 string strContent = await response.Content.ReadAsStringAsync();
                 DriveItemResultSet results = (DriveItemResultSet)JsonConvert.DeserializeObject(strContent, typeof(DriveItemResultSet));
 
-                items = results.Items.Where(i => (i.folder != null) || ((fileTypes != null) ? fileTypes.Contains(i.file.mimeType) : (i.file != null))).ToList();
+                items = results.Items.Where(i => (i.Folder != null) || ((fileTypes != null) ? fileTypes.Contains(i.File.MimeType) : (i.File != null))).ToList();
             }
             catch (Exception ex)
             {
@@ -339,7 +345,7 @@ namespace DivocCommon
 
             List<DriveItem> items = await SaveDocumentsREST(fileInfoList, parentId, progress);
 
-            items.ForEach(item => webDavUrls.Add((item.name, item.webDavUrl)));
+            items.ForEach(item => webDavUrls.Add((item.Name, item.WebDavUrl)));
 
             return webDavUrls;
         }
@@ -383,7 +389,7 @@ namespace DivocCommon
                             {
                                 httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + AuthenticationManager.AccessToken);
 
-                                response = await httpClient.PutAsync(EndPoints.NewItem(rootDriveId, (parentId.Length > 0) ? parentId : rootItemId, info.Key), streamContent);
+                                response = await httpClient.PutAsync(EndPoints.NewItem(Root.ParentReference.DriveId, (parentId.Length > 0) ? parentId : Root.Id, info.Key), streamContent);
                                 string strContent = await response.Content.ReadAsStringAsync();
 
                                 DriveItem newItem = (DriveItem)JsonConvert.DeserializeObject(strContent, typeof(DriveItem));
@@ -392,7 +398,7 @@ namespace DivocCommon
                                 {
                                     items.Add(newItem);
 
-                                    ReportProgress(progress, ++filesSaved, newItem.name);
+                                    ReportProgress(progress, ++filesSaved, newItem.Name);
                                 }
                             }
                         }

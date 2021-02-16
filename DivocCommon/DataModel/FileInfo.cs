@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace DivocCommon.DataModel
 {
@@ -10,11 +11,14 @@ namespace DivocCommon.DataModel
     {
         public class HashInfo
         {
-            public string quickXorHash { get; set; }
+            [JsonProperty("quickXorHash")]
+            public string QuickXorHash { get; set; }
         }
 
-        public string mimeType { get; set; }
+        [JsonProperty("mimeType")]
+        public string MimeType { get; set; }
 
-        public HashInfo hashes { get; set; }
+        [JsonProperty("hashes")]
+        public HashInfo Hashes { get; set; }
     }
 }

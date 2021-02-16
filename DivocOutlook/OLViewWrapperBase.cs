@@ -16,7 +16,7 @@ namespace DivocOutlook
 
         protected void OnClosed()
         {
-            if (Closed != null) Closed(Id);
+            Closed?.Invoke(Id);
         }
 
         public OLViewWrapperBase()

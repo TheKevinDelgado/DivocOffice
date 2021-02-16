@@ -16,9 +16,9 @@ namespace DivocOutlook
     class InspectorWrapper : OLViewWrapperBase, IWin32Window
     {
         public Outlook.Inspector Inspector { get; private set; }
-        Outlook.MailItem _email = null;
 
-        AttachmentsHandler _attachmentsHandler = null;
+        private readonly Outlook.MailItem _email;
+        readonly AttachmentsHandler _attachmentsHandler = null;
 
         public InspectorWrapper(Outlook.Inspector inspector)
         {
@@ -49,8 +49,17 @@ namespace DivocOutlook
         {
             get 
             {
-                IntPtr wnd;
-                ((IOleWindow)this).GetWindow(out wnd);
+                IntPtr wnd = IntPtr.Zero;
+
+                try
+                {
+                    ((IOleWindow)Inspector).GetWindow(out wnd);
+                }
+                catch(Exception ex)
+                {
+                    LogManager.LogException(ex);
+                }
+
                 return wnd;
             }
         }
@@ -81,11 +90,6 @@ namespace DivocOutlook
             {
                 Cancel = _attachmentsHandler.UploadAndLink();
             }
-        }
-
-        void HandleAttachmentProcessProgress(int val)
-        {
-            Console.WriteLine(val.ToString());
         }
 
         void RemoveEventHandlers()

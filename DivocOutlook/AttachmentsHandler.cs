@@ -12,13 +12,13 @@ namespace DivocOutlook
 {
     public class AttachmentsHandler
     {
-        Outlook.MailItem _mailItem = null;
-        Outlook.Attachments _attachments = null;
-        IWin32Window _window = null;
+        private readonly Outlook.MailItem _mailItem;
+        readonly Outlook.Attachments _attachments;
+        private readonly IWin32Window _parentWindow;
 
         public AttachmentsHandler(IWin32Window window, ref Outlook.MailItem mailItem)
         {
-            if (window != null) _window = window;
+            if (window != null) _parentWindow = window;
 
             if (mailItem != null)
             {
@@ -48,7 +48,7 @@ namespace DivocOutlook
                 string prompt = ResourceBroker.GetString(ResourceBroker.ResourceID.UPLOAD_AND_LINK_PROMPT);
                 string caption = ResourceBroker.GetString(ResourceBroker.ResourceID.UPLOAD_AND_LINK_CAPTION);
 
-                DialogResult dlgRes = MessageBox.Show(prompt, caption, MessageBoxButtons.YesNoCancel);
+                DialogResult dlgRes = MessageBox.Show(_parentWindow, prompt, caption, MessageBoxButtons.YesNoCancel);
 
                 if (DialogResult.Yes == dlgRes)
                 {
@@ -75,9 +75,9 @@ namespace DivocOutlook
 
                             StringBuilder strBldr = new StringBuilder();
 
-                            foreach ((string name, string webDavUrl) item in savedItems)
+                            foreach ((string name, string webDavUrl) in savedItems)
                             {
-                                strBldr.AppendLine("<tr><td><a href=\"" + item.webDavUrl + "\">" + item.name + "</a></td></tr>");
+                                strBldr.AppendLine("<tr><td><a href=\"" + webDavUrl + "\">" + name + "</a></td></tr>");
                             }
 
                             _mailItem.HTMLBody = emlTemplate.Replace("{{webDavUrls}}", strBldr.ToString()) + _mailItem.HTMLBody;
@@ -102,6 +102,7 @@ namespace DivocOutlook
             catch (Exception ex)
             {
                 LogManager.LogException(ex);
+                cancel = true;
             }
 
             return cancel;
