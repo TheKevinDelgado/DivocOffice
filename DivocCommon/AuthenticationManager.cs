@@ -92,7 +92,7 @@ namespace DivocCommon
             }
         }
 
-        string[] scopes = new string[] 
+        readonly string[] scopes = new string[] 
             {
                 "user.read", 
                 "files.readwrite.all",
@@ -141,13 +141,13 @@ namespace DivocCommon
                 {
                     authResult = await PublicClientApp.AcquireTokenInteractive(scopes)
                         .WithAccount(firstAccount)
-                        //.WithParentActivityOrWindow(wnd) // optional, used to center the browser on the window
+                        .WithParentActivityOrWindow(wnd) // optional, used to center the browser on the window
                         .WithPrompt(Prompt.SelectAccount)
                         .ExecuteAsync();
                 }
                 catch (MsalException msalex)
                 {
-                    string err = $"Error Acquiring Token:{System.Environment.NewLine}{msalex}";
+                    _ = $"Error Acquiring Token:{System.Environment.NewLine}{msalex}";
                     LogManager.LogException(msalex);
                 }
             }
@@ -161,7 +161,7 @@ namespace DivocCommon
             return success;
         }
 
-        public async void SignOut()
+        public static async void SignOut()
         {
             var accounts = await PublicClientApp.GetAccountsAsync();
             if (accounts.Any())
@@ -172,7 +172,7 @@ namespace DivocCommon
                 }
                 catch (MsalException ex)
                 {
-                    string err = $"Error signing-out user: {ex.Message}";
+                    _ = $"Error signing-out user: {ex.Message}";
                     LogManager.LogException(ex);
                 }
             }

@@ -43,7 +43,7 @@ namespace DivocPowerPoint
         {
             LogManager.LogMethod(string.Format("Ribbon Id: {0}", ribbonID));
 
-            string ribbonUI = null;
+            string ribbonUI;
 
             switch (ribbonID)
             {
@@ -123,11 +123,9 @@ namespace DivocPowerPoint
 
         #region Internal Methods
 
-        private async void SavePresentation(PowerPoint.Presentation pres)
+        private static async void SavePresentation(PowerPoint.Presentation pres)
         {
-            string fileName = string.Empty;
-
-            fileName = pres.Name;
+            string fileName = pres.Name;
 
             // Possibly have invalid characters so fix that...
             fileName = Helpers.CleanFilename(fileName);
@@ -152,23 +150,25 @@ namespace DivocPowerPoint
 
                 List<(string, string)> savedItems = await ThisAddIn.ContentManager.SaveDocuments(fileInfoList, parentId);
 
-                foreach ((string name, string webDavUrl) item in savedItems)
+                foreach ((_, string webDavUrl) in savedItems)
                 {
-                    ThisAddIn.Instance.Application.Presentations.Open(item.webDavUrl);
+                    ThisAddIn.Instance.Application.Presentations.Open(webDavUrl);
                 }
             }
         }
 
-        private void OpenPresentation()
+        private static void OpenPresentation()
         {
-            List<string> types = new List<string>();
-            types.Add(ItemMimeTypes.PPT_PRESENTATION);
-            types.Add(ItemMimeTypes.PPT_TEMPLATE);
+            List<string> types = new List<string>
+            {
+                ItemMimeTypes.PPT_PRESENTATION,
+                ItemMimeTypes.PPT_TEMPLATE
+            };
 
             string itemUrl = ThisAddIn.ContentManager.BrowseForItem(types);
             if (!string.IsNullOrEmpty(itemUrl))
             {
-                PowerPoint.Presentation openpres = ThisAddIn.Instance.Application.Presentations.Open(itemUrl);
+                _ = ThisAddIn.Instance.Application.Presentations.Open(itemUrl);
             }
         }
 

@@ -15,10 +15,10 @@ namespace DivocCommon
     {
         public List<(string name, string webDavUrl)> WebDavUrls { get; private set; }
 
-        private ContentManager _contentMgr = null;
-        private List<KeyValuePair<string, string>> _fileInfoList = null;
-        private string _parentId = string.Empty;
-        dynamic progressHandler = null;
+        private readonly ContentManager _contentMgr;
+        private readonly List<KeyValuePair<string, string>> _fileInfoList;
+        private readonly string _parentId = string.Empty;
+        private readonly dynamic progressHandler;
 
         public SaveWithProgressForm(ContentManager contentManager, List<KeyValuePair<string, string>> fileInfoList, string parentId = "")
         {

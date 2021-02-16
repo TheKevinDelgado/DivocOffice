@@ -40,18 +40,18 @@ namespace DivocOutlook
                 WrapInspector(insp);
             }
 
-            _explorers.NewExplorer += _explorers_NewExplorer;
-            _inspectors.NewInspector += _inspectors_NewInspector;
+            _explorers.NewExplorer += Explorers_NewExplorer;
+            _inspectors.NewInspector += Inspectors_NewInspector;
 
             ContentManager = new ContentManager();
         }
 
-        private void _explorers_NewExplorer(Outlook.Explorer Explorer)
+        private void Explorers_NewExplorer(Outlook.Explorer Explorer)
         {
             WrapExplorer(Explorer);
         }
 
-        private void _inspectors_NewInspector(Outlook.Inspector Inspector)
+        private void Inspectors_NewInspector(Outlook.Inspector Inspector)
         {
             WrapInspector(Inspector);
         }

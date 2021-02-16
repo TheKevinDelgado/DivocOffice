@@ -39,8 +39,17 @@ namespace DivocOutlook
         {
             get
             {
-                IntPtr wnd;
-                ((IOleWindow)this).GetWindow(out wnd);
+                IntPtr wnd = IntPtr.Zero;
+
+                try
+                {
+                    ((IOleWindow)Explorer).GetWindow(out wnd);
+                }
+                catch (Exception ex)
+                {
+                    LogManager.LogException(ex);
+                }
+
                 return wnd;
             }
         }

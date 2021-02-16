@@ -15,7 +15,7 @@ namespace TestShell
 {
     public partial class TestShell : Form
     {
-        Logger _log = null;
+        readonly Logger _log = null;
 
         public TestShell()
         {
@@ -30,7 +30,7 @@ namespace TestShell
             _log.Information("TestShell -> TestShell");
         }
 
-        private void listBoxCommonDialogs_SelectedIndexChanged(object sender, EventArgs e)
+        private void ListBoxCommonDialogs_SelectedIndexChanged(object sender, EventArgs e)
         {
             if(this.listBoxCommonDialogs.SelectedIndex > -1)
             {
@@ -42,7 +42,7 @@ namespace TestShell
             }
         }
 
-        private void buttonRunCommonDialog_Click(object sender, EventArgs e)
+        private void ButtonRunCommonDialog_Click(object sender, EventArgs e)
         {
             if (listBoxCommonDialogs.SelectedItem.ToString() == "WebBrowserControl")
             {
@@ -58,10 +58,10 @@ namespace TestShell
             }
         }
 
-        private void TestShell_Load(object sender, EventArgs e)
+        private async void TestShell_Load(object sender, EventArgs e)
         {
             AuthenticationManager auth = new AuthenticationManager();
-            auth.Authenticate(this.Handle);
+            await auth.Authenticate(this.Handle);
         }
     }
 }

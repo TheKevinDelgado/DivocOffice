@@ -3,15 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace DivocCommon.DataModel
 {
     public class IdentityInfo
     {
-        public string email { get; set; }
+        [JsonProperty("email")]
+        public string Email { get; set; }
 
-        public string id { get; set; }
+        [JsonProperty("id")]
+        public string Id { get; set; }
 
-        public string displayName { get; set; }
+        [JsonProperty("displayName")]
+        public string DisplayName { get; set; }
     }
 }

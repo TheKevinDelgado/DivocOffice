@@ -45,7 +45,7 @@ namespace DivocOutlook
         {
             LogManager.LogMethod(string.Format("Ribbon Id: {0}", ribbonID));
 
-            string ribbonUI = null;
+            string ribbonUI;
 
             switch(ribbonID)
             {
@@ -131,7 +131,7 @@ namespace DivocOutlook
             }
         }
 
-        private void SaveEmails(Outlook.Explorer expl)
+        private static void SaveEmails(Outlook.Explorer expl)
         {
             // * Get the selection of emails
             // * Save them to user's temp dir
@@ -158,12 +158,12 @@ namespace DivocOutlook
                         fileInfoList.Add(new KeyValuePair<string, string>(fileName, filePath));
                     }
 
-                    ThisAddIn.ContentManager.SaveDocuments(fileInfoList, parentId);
+                    ThisAddIn.ContentManager.SaveWithProgress(fileInfoList, parentId);
                 }
             }
         }
 
-        private void SaveAttachments(Outlook.Explorer expl)
+        private static void SaveAttachments(Outlook.Explorer expl)
         {
             // * Get the selection of emails
             // * Get the attachments from the emails
@@ -172,25 +172,30 @@ namespace DivocOutlook
             // * Content manager will delete the temps
             if (expl.Selection.Count > 0 && expl.Selection[1] is Outlook.MailItem)
             {
-                string userTempPath = Path.GetTempPath();
-                List<KeyValuePair<string, string>> fileInfoList = new List<KeyValuePair<string, string>>();
+                string parentId = ThisAddIn.ContentManager.BrowseForLocation();
 
-                foreach (Outlook.MailItem item in expl.Selection)
+                if (!string.IsNullOrEmpty(parentId))
                 {
-                    foreach(Outlook.Attachment attach in item.Attachments)
-                    {
-                        string fileName = attach.FileName;
-                        string filePath = userTempPath + fileName;
-                        attach.SaveAsFile(filePath);
-                        fileInfoList.Add(new KeyValuePair<string, string>(fileName, filePath));
-                    }
-                }
+                    string userTempPath = Path.GetTempPath();
+                    List<KeyValuePair<string, string>> fileInfoList = new List<KeyValuePair<string, string>>();
 
-                ThisAddIn.ContentManager.SaveDocuments(fileInfoList);
+                    foreach (Outlook.MailItem item in expl.Selection)
+                    {
+                        foreach (Outlook.Attachment attach in item.Attachments)
+                        {
+                            string fileName = attach.FileName;
+                            string filePath = userTempPath + fileName;
+                            attach.SaveAsFile(filePath);
+                            fileInfoList.Add(new KeyValuePair<string, string>(fileName, filePath));
+                        }
+                    }
+
+                    ThisAddIn.ContentManager.SaveWithProgress(fileInfoList, parentId);
+                }
             }
         }
 
-        private void HandleInspectorAction(Office.IRibbonControl control)
+        private static void HandleInspectorAction(Office.IRibbonControl control)
         {
             try
             {
@@ -220,29 +225,34 @@ namespace DivocOutlook
             }
         }
 
-        private void SaveAttachments(Outlook.MailItem email)
+        private static void SaveAttachments(Outlook.MailItem email)
         {
             // Save the email's attachments. May need to check each attachment
             // and make sure it isn't a signature image or such. Don't save those.
 
             if(email.Attachments.Count > 0) // Should be filtered via enablement but just in case
             {
-                string userTempPath = Path.GetTempPath();
-                List<KeyValuePair<string, string>> fileInfoList = new List<KeyValuePair<string, string>>();
+                string parentId = ThisAddIn.ContentManager.BrowseForLocation();
 
-                foreach (Outlook.Attachment attach in email.Attachments)
+                if (!string.IsNullOrEmpty(parentId))
                 {
-                    string fileName = attach.FileName;
-                    string filePath = userTempPath + fileName;
-                    attach.SaveAsFile(filePath);
-                    fileInfoList.Add(new KeyValuePair<string, string>(fileName, filePath));
-                }
+                    string userTempPath = Path.GetTempPath();
+                    List<KeyValuePair<string, string>> fileInfoList = new List<KeyValuePair<string, string>>();
 
-                ThisAddIn.ContentManager.SaveDocuments(fileInfoList);
+                    foreach (Outlook.Attachment attach in email.Attachments)
+                    {
+                        string fileName = attach.FileName;
+                        string filePath = userTempPath + fileName;
+                        attach.SaveAsFile(filePath);
+                        fileInfoList.Add(new KeyValuePair<string, string>(fileName, filePath));
+                    }
+
+                    ThisAddIn.ContentManager.SaveWithProgress(fileInfoList, parentId);
+                }
             }
         }
 
-        private void InsertAttachments(Outlook.MailItem email)
+        private static void InsertAttachments(Outlook.MailItem email)
         {
             string itemUrl = ThisAddIn.ContentManager.BrowseForItem();
             if (!string.IsNullOrEmpty(itemUrl))
@@ -282,7 +292,7 @@ namespace DivocOutlook
             return enabled;
         }
 
-        private bool HandleExplorerEnablement(Office.IRibbonControl control)
+        private static bool HandleExplorerEnablement(Office.IRibbonControl control)
         {
             bool enabled = false;
 
@@ -332,7 +342,7 @@ namespace DivocOutlook
             return enabled;
         }
 
-        private bool HandleInspectorEnablement(Office.IRibbonControl control)
+        private static bool HandleInspectorEnablement(Office.IRibbonControl control)
         {
             bool enabled = false;
 
