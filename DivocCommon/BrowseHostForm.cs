@@ -30,10 +30,10 @@ namespace DivocCommon
         public string ItemId { get; private set; }
         public string ParentId { get; private set; }
 
-        private ContentManager _contentMgr = null;
-        private List<string> _fileTypes = null;
-        private bool _location = false;
-        DriveBrowserControl browser = null;
+        private readonly ContentManager _contentMgr;
+        private readonly List<string> _fileTypes;
+        private readonly bool _location;
+        readonly DriveBrowserControl browser;
 
         public BrowseHostForm(ContentManager contentManager, List<string> fileTypes = null, bool location = false)
         {
@@ -58,14 +58,14 @@ namespace DivocCommon
             DialogResult = DialogResult.Cancel;
         }
 
-        private void Browser_DriveItemSelected(object sender, DriveItem item)
+        private void Browser_DriveItemSelected(object sender, DriveItemSelectedArgs e)
         {
-            if(item != null)
+            if (e.Item != null)
             {
                 if (_location)
-                    ItemId = item.id;
+                    ItemId = e.Item.Id;
                 else
-                    ItemUrl = item.webDavUrl;
+                    ItemUrl = e.Item.WebDavUrl;
             }
 
             DialogResult = DialogResult.OK;

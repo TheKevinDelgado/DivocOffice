@@ -44,7 +44,7 @@ namespace DivocWord
         {
             LogManager.LogMethod(string.Format("Ribbon Id: {0}", ribbonID));
 
-            string ribbonUI = null;
+            string ribbonUI;
 
             switch (ribbonID)
             {
@@ -124,7 +124,7 @@ namespace DivocWord
 
         #region Internal Methods
 
-        private async void SaveDocument(Word.Document doc)
+        private static async void SaveDocument(Word.Document doc)
         {
             string fileName = string.Empty;
 
@@ -183,26 +183,28 @@ namespace DivocWord
 
                 List<(string, string)> savedItems = await ThisAddIn.ContentManager.SaveDocuments(fileInfoList, parentId);
 
-                foreach((string name, string webDavUrl) item in savedItems)
+                foreach((string name, string webDavUrl) in savedItems)
                 {
                     // Attempt to send a message to Teams:
-                    string html = string.Format("A <a href='{0}'>new document</a> has been added!", item.webDavUrl);
+                    string html = string.Format("A <a href='{0}'>new document: {1}</a> has been added!", webDavUrl, name);
                     ThisAddIn.ContentManager.SendMessageToTeams(html);
-                    ThisAddIn.Instance.Application.Documents.Open(item.webDavUrl);
+                    ThisAddIn.Instance.Application.Documents.Open(webDavUrl);
                 }
             }
         }
 
-        private void OpenDocument()
+        private static void OpenDocument()
         {
-            List<string> types = new List<string>();
-            types.Add(ItemMimeTypes.WORD_DOCUMENT);
-            types.Add(ItemMimeTypes.WORD_TEMPLATE);
+            List<string> types = new List<string>
+            {
+                ItemMimeTypes.WORD_DOCUMENT,
+                ItemMimeTypes.WORD_TEMPLATE
+            };
 
             string itemUrl = ThisAddIn.ContentManager.BrowseForItem(types);
             if (!string.IsNullOrEmpty(itemUrl))
             {
-                Word.Document opendoc = ThisAddIn.Instance.Application.Documents.Open(itemUrl);
+                _ = ThisAddIn.Instance.Application.Documents.Open(itemUrl);
             }
         }
 

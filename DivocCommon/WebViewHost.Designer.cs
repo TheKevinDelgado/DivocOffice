@@ -42,11 +42,11 @@ namespace DivocCommon
             this.webViewCtrl.Source = new System.Uri("https://www.git-scm.com", System.UriKind.Absolute);
             this.webViewCtrl.TabIndex = 0;
             this.webViewCtrl.ZoomFactor = 1D;
-            this.webViewCtrl.CoreWebView2Ready += new System.EventHandler<System.EventArgs>(this.webViewCtrl_CoreWebView2Ready);
-            this.webViewCtrl.NavigationStarting += new System.EventHandler<Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs>(this.webViewCtrl_NavigationStarting);
-            this.webViewCtrl.NavigationCompleted += new System.EventHandler<Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs>(this.webViewCtrl_NavigationCompleted);
-            this.webViewCtrl.SourceChanged += new System.EventHandler<Microsoft.Web.WebView2.Core.CoreWebView2SourceChangedEventArgs>(this.webViewCtrl_SourceChanged);
-            this.webViewCtrl.ContentLoading += new System.EventHandler<Microsoft.Web.WebView2.Core.CoreWebView2ContentLoadingEventArgs>(this.webViewCtrl_ContentLoading);
+            this.webViewCtrl.CoreWebView2Ready += new System.EventHandler<System.EventArgs>(this.WebViewCtrl_CoreWebView2Ready);
+            this.webViewCtrl.NavigationStarting += new System.EventHandler<Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs>(this.WebViewCtrl_NavigationStarting);
+            this.webViewCtrl.NavigationCompleted += new System.EventHandler<Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs>(this.WebViewCtrl_NavigationCompleted);
+            this.webViewCtrl.SourceChanged += new System.EventHandler<Microsoft.Web.WebView2.Core.CoreWebView2SourceChangedEventArgs>(this.WebViewCtrl_SourceChanged);
+            this.webViewCtrl.ContentLoading += new System.EventHandler<Microsoft.Web.WebView2.Core.CoreWebView2ContentLoadingEventArgs>(this.WebViewCtrl_ContentLoading);
             // 
             // WebViewHost
             // 

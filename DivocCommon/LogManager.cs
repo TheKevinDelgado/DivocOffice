@@ -12,7 +12,7 @@ namespace DivocCommon
 {
     public static class LogManager
     {
-        static Logger _log = null;
+        public static Logger Log { get; private set; }
 
         static LogManager()
         {
@@ -21,7 +21,7 @@ namespace DivocCommon
             // Reading from a local config file would be desireable from a customer support
             // standpoint. Tell customer what to config and let them run the software to
             // generate new logs and have them send those for analysis.
-            _log = new LoggerConfiguration()
+            Log = new LoggerConfiguration()
                    .MinimumLevel.Debug()
                    .WriteTo.Console()
                    .WriteTo.Debug()
@@ -39,17 +39,17 @@ namespace DivocCommon
             StackTrace st = new StackTrace();
             StackFrame sf = st.GetFrame(1);
             MethodBase mb = sf.GetMethod();
-            _log.Information("[{type}.{method}] {message}", mb.DeclaringType.FullName, mb.Name, message);
+            Log.Information("[{type}.{method}] {message}", mb.DeclaringType.FullName, mb.Name, message);
         }
 
         public static void LogException(Exception ex)
         {
-            _log.Error("{@ex}", ex);
+            Log.Error("{@ex}", ex);
         }
 
         public static void LogInformation(string message)
         {
-            _log.Information(message);
+            Log.Information(message);
         }
     }
 }

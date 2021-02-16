@@ -29,6 +29,7 @@ namespace DivocCommon
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SaveWithProgressForm));
             this.labelProgress = new System.Windows.Forms.Label();
             this.progressBarSave = new System.Windows.Forms.ProgressBar();
             this.SuspendLayout();
@@ -57,6 +58,7 @@ namespace DivocCommon
             this.ClientSize = new System.Drawing.Size(524, 77);
             this.Controls.Add(this.progressBarSave);
             this.Controls.Add(this.labelProgress);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SaveWithProgressForm";
             this.Text = "Saving to Divoc...";
             this.Load += new System.EventHandler(this.SaveWithProgressFrom_Load);

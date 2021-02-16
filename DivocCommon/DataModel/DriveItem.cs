@@ -11,20 +11,35 @@ namespace DivocCommon.DataModel
     {
         [JsonProperty("@microsoft.graph.downloadUrl")]
         public string GraphDownloadURL { get; set; }
-        public DateTime createdDateTime { get; set; }
-        public string eTag { get; set; }
-        public string id { get; set; }
-        public DateTime lastModifiedDateTime { get; set; }
-        public string name { get; set; }
-        public string webUrl { get; set; }
-        public string cTag { get; set; }
-        public int size { get; set; }
-        public ActionInfo createdBy { get; set; }
-        public ActionInfo lastModifiedBy { get; set; }
-        public ParentInfo parentReference { get; set; }
-        public FileInfo file { get; set; }
-        public FileSystemInfo fileSystemInfo { get; set; }
-        public FolderInfo folder { get; set; }
-        public string webDavUrl { get; set; }
+        [JsonProperty("createdDateTime")]
+        public DateTime CreatedDateTime { get; set; }
+        [JsonProperty("eTag")]
+        public string ETag { get; set; }
+        [JsonProperty("id")]
+        public string Id { get; set; }
+        [JsonProperty("lastModifiedDateTime")]
+        public DateTime LastModifiedDateTime { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
+        [JsonProperty("webUrl")]
+        public string WebUrl { get; set; }
+        [JsonProperty("cTag")]
+        public string CTag { get; set; }
+        [JsonProperty("size")]
+        public int Size { get; set; }
+        [JsonProperty("createdBy")]
+        public ActionInfo CreatedBy { get; set; }
+        [JsonProperty("lastModifiedBy")]
+        public ActionInfo LastModifiedBy { get; set; }
+        [JsonProperty("parentReference")]
+        public ParentInfo ParentReference { get; set; }
+        [JsonProperty("file")]
+        public FileInfo File { get; set; }
+        [JsonProperty("fileSystemInfo")]
+        public FileSystemInfo FileSystemInfo { get; set; }
+        [JsonProperty("folder")]
+        public FolderInfo Folder { get; set; }
+        [JsonProperty("webDavUrl")]
+        public string WebDavUrl { get; set; }
     }
 }
