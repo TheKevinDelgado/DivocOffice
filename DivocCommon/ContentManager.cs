@@ -179,15 +179,17 @@ namespace DivocCommon
         /// </summary>
         /// <param name="fileTypes">List of <see cref="T:DivocCommon.ItemMimeTypes">ItemMimeTypes</see> to filter on.</param>
         /// <returns>WebDav URL for the selected item to open.</returns>
-        public string BrowseForItem(List<string> fileTypes = null)
+        public string BrowseForItem(List<string> fileTypes = null, IntPtr wnd = default)
         {
             string itemUrl = null;
 
-            BrowseHostForm browse = new BrowseHostForm(this, fileTypes);
+            DriveBrowser browseWnd = new DriveBrowser(this, fileTypes, wnd: wnd);
+            
+            bool? dlgRes = browseWnd.ShowDialog();
 
-            if (Forms.DialogResult.OK == browse.ShowDialog())
+            if(dlgRes ?? false)
             {
-                itemUrl = browse.ItemUrl;
+                itemUrl = browseWnd.SelectedItem.WebDavUrl;
             }
 
             return itemUrl;
@@ -212,18 +214,17 @@ namespace DivocCommon
         /// </TODO>
         /// <param name="fileNameDefaultsList">List of default names of new items</param>
         /// <returns>Id of the location to be used for the new item.</returns>
-        public string BrowseForLocation()
+        public string BrowseForLocation(IntPtr wnd = default)
         {
             string itemId = null;
 
-            BrowseHostForm browse = new BrowseHostForm(this, location: true);
+            DriveBrowser browseWnd = new DriveBrowser(this, saving: true, wnd: wnd);
 
-            if (Forms.DialogResult.OK == browse.ShowDialog())
+            bool? dlgRes = browseWnd.ShowDialog();
+
+            if (dlgRes ?? false)
             {
-                itemId = browse.ItemId;
-
-                if (string.IsNullOrEmpty(itemId))
-                    itemId = Root.Id;
+                itemId = browseWnd.SelectedItem.Id;
             }
 
             return itemId;

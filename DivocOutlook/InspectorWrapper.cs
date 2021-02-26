@@ -49,19 +49,24 @@ namespace DivocOutlook
         {
             get 
             {
-                IntPtr wnd = IntPtr.Zero;
-
-                try
-                {
-                    ((IOleWindow)Inspector).GetWindow(out wnd);
-                }
-                catch(Exception ex)
-                {
-                    LogManager.LogException(ex);
-                }
-
-                return wnd;
+                return GetHandleForInspector(Inspector);
             }
+        }
+
+        public static IntPtr GetHandleForInspector(Outlook.Inspector inspector)
+        {
+            IntPtr wnd = IntPtr.Zero;
+
+            try
+            {
+                ((IOleWindow)inspector).GetWindow(out wnd);
+            }
+            catch (Exception ex)
+            {
+                LogManager.LogException(ex);
+            }
+
+            return wnd;
         }
 
         /// <summary>

@@ -101,17 +101,22 @@ namespace DivocExcel
         {
             try
             {
-                switch (control.Id)
-                {
-                    case RibbonIDs.SAVE_WORKBOOK:
-                        Excel.Application app = control.Context.Application as Excel.Application;
-                        Excel.Workbook book = app.ActiveWorkbook;
-                        SaveWorkbook(book);
-                        break;
+                Excel.Application app = ThisAddIn.Instance.Application;
 
-                    case RibbonIDs.OPEN_WORKBOOK:
-                        OpenWorkbook();
-                        break;
+                if(app != null)
+                {
+                    switch (control.Id)
+                    {
+                        case RibbonIDs.SAVE_WORKBOOK:
+                            Excel.Workbook book = app.ActiveWorkbook;
+                            SaveWorkbook(book, new IntPtr(app.Hwnd));
+                            break;
+
+                        case RibbonIDs.OPEN_WORKBOOK:
+                        case RibbonIDs.OPEN_WORKBOOK_BACKSTAGE:
+                            OpenWorkbook(new IntPtr(app.Hwnd));
+                            break;
+                    }
                 }
             }
             catch (Exception ex)
@@ -133,7 +138,7 @@ namespace DivocExcel
         /// but so far only excel has this issue. Investigate.
         /// </notes>
         /// <param name="book">The workbook to save</param>
-        private static async void SaveWorkbook(Excel.Workbook book)
+        private static async void SaveWorkbook(Excel.Workbook book, IntPtr wnd = default)
         {
             string fileName = book.Name;
 
@@ -143,7 +148,7 @@ namespace DivocExcel
             string userTempPath = Path.GetTempPath();
             string filePath = userTempPath + fileName;
 
-            string parentId = ThisAddIn.ContentManager.BrowseForLocation();
+            string parentId = ThisAddIn.ContentManager.BrowseForLocation(wnd);
 
             if (!string.IsNullOrEmpty(parentId))
             {
@@ -167,7 +172,7 @@ namespace DivocExcel
             }
         }
 
-        private static void OpenWorkbook()
+        private static void OpenWorkbook(IntPtr wnd = default)
         {
             List<string> types = new List<string>
             {
@@ -175,7 +180,7 @@ namespace DivocExcel
                 ItemMimeTypes.EXCEL_TEMPLATE
             };
 
-            string itemUrl = ThisAddIn.ContentManager.BrowseForItem(types);
+            string itemUrl = ThisAddIn.ContentManager.BrowseForItem(types, wnd: wnd);
             if (!string.IsNullOrEmpty(itemUrl))
             {
                 _ = ThisAddIn.Instance.Application.Workbooks.Open(itemUrl);

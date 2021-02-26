@@ -9,6 +9,7 @@ using Office = Microsoft.Office.Core;
 using Word = Microsoft.Office.Interop.Word;
 using DivocCommon;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 // TODO:  Follow these steps to enable the Ribbon (XML) item:
 
@@ -102,15 +103,22 @@ namespace DivocWord
         {     
             try
             {
+                // Not a fan of this but it seems to be reliable. 
+                // Inconsistent with other office apps, but what else is new?
+                // MS should just add an HWND property to the Application class
+                // to make it easy. Same for Outlook, but alas.
+                IntPtr hwnd = Process.GetCurrentProcess().MainWindowHandle; 
+
                 switch (control.Id)
                 {
                     case RibbonIDs.SAVE_DOCUMENT:
                         Word.Document doc = control.Context.Document as Word.Document;
-                        SaveDocument(doc);
+                        SaveDocument(doc, hwnd);
                         break;
 
                     case RibbonIDs.OPEN_DOCUMENT:
-                        OpenDocument();
+                    case RibbonIDs.OPEN_DOCUMENT_BACKSTAGE:
+                        OpenDocument(hwnd);
                         break;
                 }
             }
@@ -124,7 +132,7 @@ namespace DivocWord
 
         #region Internal Methods
 
-        private static async void SaveDocument(Word.Document doc)
+        private static async void SaveDocument(Word.Document doc, IntPtr wnd = default)
         {
             string fileName = string.Empty;
 
@@ -166,7 +174,7 @@ namespace DivocWord
             string userTempPath = Path.GetTempPath();
             string filePath = userTempPath + fileName;
 
-            string parentId = ThisAddIn.ContentManager.BrowseForLocation();
+            string parentId = ThisAddIn.ContentManager.BrowseForLocation(wnd);
 
             if(!string.IsNullOrEmpty(parentId))
             {
@@ -193,7 +201,7 @@ namespace DivocWord
             }
         }
 
-        private static void OpenDocument()
+        private static void OpenDocument(IntPtr wnd = default)
         {
             List<string> types = new List<string>
             {
@@ -201,7 +209,7 @@ namespace DivocWord
                 ItemMimeTypes.WORD_TEMPLATE
             };
 
-            string itemUrl = ThisAddIn.ContentManager.BrowseForItem(types);
+            string itemUrl = ThisAddIn.ContentManager.BrowseForItem(types, wnd);
             if (!string.IsNullOrEmpty(itemUrl))
             {
                 _ = ThisAddIn.Instance.Application.Documents.Open(itemUrl);

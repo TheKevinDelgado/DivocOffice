@@ -20,9 +20,14 @@ namespace DivocCommon
         public const string SETTINGS_LAUNCHER = "SettingsLauncher";
         public const string SAVE_DOCUMENT = "SaveDocument";
         public const string OPEN_DOCUMENT = "OpenDocument";
+        public const string OPEN_DOCUMENT_BACKSTAGE = "OpenDocumentBackstage";
         public const string SAVE_PRESENTATION = "SavePresentation";
         public const string OPEN_PRESENTATION = "OpenPresentation";
+        public const string OPEN_PRESENTATION_BACKSTAGE = "OpenPresentationBackstage";
         public const string SAVE_WORKBOOK = "SaveWorkbook";
         public const string OPEN_WORKBOOK = "OpenWorkbook";
+        public const string OPEN_WORKBOOK_BACKSTAGE = "OpenWorkbookBackstage";
+        public const string BACKSTAGE_OPEN_TASK = "DivocOpenTask";
+        public const string BACKSTAGE_OPEN_TASK_GROUP = "DivocOpenTaskGroup";
     }
 }

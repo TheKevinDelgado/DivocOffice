@@ -41,5 +41,7 @@ namespace DivocCommon.DataModel
         public FolderInfo Folder { get; set; }
         [JsonProperty("webDavUrl")]
         public string WebDavUrl { get; set; }
+        [JsonProperty("root")]
+        public dynamic Root { get; set; }
     }
 }
