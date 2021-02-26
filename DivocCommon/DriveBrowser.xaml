@@ -1,13 +1,18 @@
-﻿<UserControl x:Class="DivocCommon.DriveBrowserControl"
+﻿<Window x:Class="DivocCommon.DriveBrowser"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DivocCommon"
              xmlns:dataModel="clr-namespace:DivocCommon.DataModel"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
-    <UserControl.Resources>
+             mc:Ignorable="d"
+             Title="{Binding OpenLabel}"
+             Icon="pack://application:,,,/DivocCommon;component/Resources/AppIcon.ico"
+             WindowStartupLocation="CenterOwner"
+             d:DesignHeight="450" d:DesignWidth="800"
+             Width="1000" Height="500"            
+             Loaded="UserControl_Loaded">
+    <Window.Resources>
         <DataTemplate x:Key="DriveItemTemplate" DataType="{x:Type dataModel:DriveItem}">
             <StackPanel Orientation="Horizontal">
                 <Image>
@@ -52,21 +57,22 @@
                 <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Margin="5,0,0,0"/>
             </StackPanel>
         </DataTemplate>
-    </UserControl.Resources>
-    <Grid>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <ListView x:Name="listItems" Grid.Row="0" ItemsSource="{Binding Items}" SelectionChanged="ListItems_SelectionChanged" ItemTemplate="{StaticResource DriveItemTemplate}" SelectionMode="Single" MouseDoubleClick="ListItems_MouseDoubleClick">
-            </ListView>
-            <Button Grid.Row="1" x:Name="upBtn" Width="30" Content="Up" HorizontalAlignment="Left" Click="UpBtn_Click" Visibility="Hidden">
-            </Button>
-            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Height="40">
-                <Button x:Name="openBtn" Content="Open" HorizontalAlignment="Left" Width="130" IsDefault="True" Height="35" IsEnabled="False" Click="OpenBtn_Click"/>
-                <Button x:Name="cancelBtn" Content="Cancel" HorizontalAlignment="Left" Height="35"  Width="130" IsCancel="True" Margin="5,0,0,0" Click="CancelBtn_Click" />
-            </StackPanel>
-        </Grid>
+    </Window.Resources>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Background="Cornsilk" Height="Auto" Grid.Row="0" Orientation="Horizontal">
+            <Button x:Name="upBtn" Width="30" Content="Up" HorizontalAlignment="Left" Click="UpBtn_Click" Visibility="{Binding UpVisibility}" />
+            <Label Content="{Binding ParentItem.Name}"/>
+        </StackPanel> 
+        <ListView x:Name="listItems" Margin="0,0,0,5" Grid.Row="1" ItemsSource="{Binding Items}" SelectionChanged="ListItems_SelectionChanged" ItemTemplate="{StaticResource DriveItemTemplate}" SelectionMode="Single" MouseDoubleClick="ListItems_MouseDoubleClick">
+        </ListView>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Height="40">
+            <Button x:Name="openBtn" Content="{Binding OpenLabel}" HorizontalAlignment="Left" Width="130" IsDefault="True" Height="35" IsEnabled="False" Click="OpenBtn_Click"/>
+            <Button x:Name="cancelBtn" Content="Cancel" HorizontalAlignment="Left" Height="35"  Width="130" IsCancel="True" Margin="5,0,0,0" Click="CancelBtn_Click" />
+        </StackPanel>
     </Grid>
-</UserControl>
+</Window>

@@ -105,11 +105,12 @@ namespace DivocPowerPoint
                 {
                     case RibbonIDs.SAVE_PRESENTATION:
                         PowerPoint.Presentation pres = control.Context.Presentation as PowerPoint.Presentation;
-                        SavePresentation(pres);
+                        SavePresentation(pres, new IntPtr(ThisAddIn.Instance.Application.HWND));
                         break;
 
                     case RibbonIDs.OPEN_PRESENTATION:
-                        OpenPresentation();
+                    case RibbonIDs.OPEN_PRESENTATION_BACKSTAGE:
+                        OpenPresentation(new IntPtr(ThisAddIn.Instance.Application.HWND));
                         break;
                 }
             }
@@ -123,7 +124,7 @@ namespace DivocPowerPoint
 
         #region Internal Methods
 
-        private static async void SavePresentation(PowerPoint.Presentation pres)
+        private static async void SavePresentation(PowerPoint.Presentation pres, IntPtr wnd = default)
         {
             string fileName = pres.Name;
 
@@ -133,7 +134,7 @@ namespace DivocPowerPoint
             string userTempPath = Path.GetTempPath();
             string filePath = userTempPath + fileName;
 
-            string parentId = ThisAddIn.ContentManager.BrowseForLocation();
+            string parentId = ThisAddIn.ContentManager.BrowseForLocation(wnd);
 
             if (!string.IsNullOrEmpty(parentId))
             {
@@ -157,7 +158,7 @@ namespace DivocPowerPoint
             }
         }
 
-        private static void OpenPresentation()
+        private static void OpenPresentation(IntPtr wnd = default)
         {
             List<string> types = new List<string>
             {
@@ -165,7 +166,7 @@ namespace DivocPowerPoint
                 ItemMimeTypes.PPT_TEMPLATE
             };
 
-            string itemUrl = ThisAddIn.ContentManager.BrowseForItem(types);
+            string itemUrl = ThisAddIn.ContentManager.BrowseForItem(types, wnd);
             if (!string.IsNullOrEmpty(itemUrl))
             {
                 _ = ThisAddIn.Instance.Application.Presentations.Open(itemUrl);
