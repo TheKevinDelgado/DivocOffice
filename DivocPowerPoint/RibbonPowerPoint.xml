@@ -10,5 +10,23 @@
       </tab>
     </tabs>
   </ribbon>
+
+  <backstage>
+    <tab idMso="TabRecent">
+      <firstColumn>
+        <taskFormGroup idMso="GroupOpenPlaces">
+          <category idMso="ButtonCategoryRecentDocuments">
+            <task id="DivocOpenTask" insertAfterMso="ButtonTaskRecentDocuments" getImage="OnGetImage" getLabel="OnGetLabel">
+              <group id="DivocOpenTaskGroup" getLabel="OnGetLabel" getHelperText="OnGetHelperText">
+                <primaryItem>
+                  <button id="OpenPresentationBackstage" getImage="OnGetImage" getLabel="OnGetLabel" onAction="OnAction"/>
+                </primaryItem>
+              </group>
+            </task>
+          </category>
+        </taskFormGroup>
+      </firstColumn>
+    </tab>
+  </backstage>  
 </customUI>
 

@@ -112,15 +112,15 @@ namespace DivocOutlook
                     switch (control.Id)
                     {
                         case RibbonIDs.SAVE_MAIL:
-                            SaveEmails(expl);
+                            SaveEmails(expl, ExplorerWrapper.GetHandleForExplorer(expl));
                             break;
 
                         case RibbonIDs.SAVE_ATTACHMENTS:
-                            SaveAttachments(expl);
+                            SaveAttachments(expl, ExplorerWrapper.GetHandleForExplorer(expl));
                             break;
 
                         case RibbonIDs.INSERT_ATTACHMENTS:
-                            InsertAttachments(expl.ActiveInlineResponse);
+                            InsertAttachments(expl.ActiveInlineResponse, ExplorerWrapper.GetHandleForExplorer(expl));
                             break;
                     }
                 }
@@ -131,7 +131,7 @@ namespace DivocOutlook
             }
         }
 
-        private static void SaveEmails(Outlook.Explorer expl)
+        private static void SaveEmails(Outlook.Explorer expl, IntPtr wnd = default)
         {
             // * Get the selection of emails
             // * Save them to user's temp dir
@@ -139,7 +139,7 @@ namespace DivocOutlook
             // * Content manager will delete the temps
             if (expl.Selection.Count > 0 && expl.Selection[1] is Outlook.MailItem)
             {
-                string parentId = ThisAddIn.ContentManager.BrowseForLocation();
+                string parentId = ThisAddIn.ContentManager.BrowseForLocation(wnd);
 
                 if (!string.IsNullOrEmpty(parentId))
                 {
@@ -163,7 +163,7 @@ namespace DivocOutlook
             }
         }
 
-        private static void SaveAttachments(Outlook.Explorer expl)
+        private static void SaveAttachments(Outlook.Explorer expl, IntPtr wnd = default)
         {
             // * Get the selection of emails
             // * Get the attachments from the emails
@@ -172,7 +172,7 @@ namespace DivocOutlook
             // * Content manager will delete the temps
             if (expl.Selection.Count > 0 && expl.Selection[1] is Outlook.MailItem)
             {
-                string parentId = ThisAddIn.ContentManager.BrowseForLocation();
+                string parentId = ThisAddIn.ContentManager.BrowseForLocation(wnd);
 
                 if (!string.IsNullOrEmpty(parentId))
                 {
@@ -210,11 +210,11 @@ namespace DivocOutlook
                     switch (control.Id)
                     {
                         case RibbonIDs.INSERT_ATTACHMENTS:
-                            InsertAttachments(mail);
+                            InsertAttachments(mail, InspectorWrapper.GetHandleForInspector(insp));
                             break;
 
                         case RibbonIDs.SAVE_ATTACHMENTS:
-                            SaveAttachments(mail);
+                            SaveAttachments(mail, InspectorWrapper.GetHandleForInspector(insp));
                             break;
                     }
                 }
@@ -225,14 +225,14 @@ namespace DivocOutlook
             }
         }
 
-        private static void SaveAttachments(Outlook.MailItem email)
+        private static void SaveAttachments(Outlook.MailItem email, IntPtr wnd = default)
         {
             // Save the email's attachments. May need to check each attachment
             // and make sure it isn't a signature image or such. Don't save those.
 
             if(email.Attachments.Count > 0) // Should be filtered via enablement but just in case
             {
-                string parentId = ThisAddIn.ContentManager.BrowseForLocation();
+                string parentId = ThisAddIn.ContentManager.BrowseForLocation(wnd);
 
                 if (!string.IsNullOrEmpty(parentId))
                 {
@@ -252,9 +252,9 @@ namespace DivocOutlook
             }
         }
 
-        private static void InsertAttachments(Outlook.MailItem email)
+        private static void InsertAttachments(Outlook.MailItem email, IntPtr wnd = default)
         {
-            string itemUrl = ThisAddIn.ContentManager.BrowseForItem();
+            string itemUrl = ThisAddIn.ContentManager.BrowseForItem(wnd: wnd);
             if (!string.IsNullOrEmpty(itemUrl))
             {
                 email.Attachments.Add(itemUrl);
