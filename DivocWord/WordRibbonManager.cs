@@ -209,10 +209,10 @@ namespace DivocWord
                 ItemMimeTypes.WORD_TEMPLATE
             };
 
-            string itemUrl = ThisAddIn.ContentManager.BrowseForItem(types, wnd);
-            if (!string.IsNullOrEmpty(itemUrl))
+            (string url, string _) = ThisAddIn.ContentManager.BrowseForItem(types, wnd);
+            if (!string.IsNullOrEmpty(url))
             {
-                _ = ThisAddIn.Instance.Application.Documents.Open(itemUrl);
+                _ = ThisAddIn.Instance.Application.Documents.Open(url);
             }
         }
 

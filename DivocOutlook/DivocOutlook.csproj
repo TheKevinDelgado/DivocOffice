@@ -258,6 +258,7 @@
     <Compile Include="AttachmentsHandler.cs" />
     <Compile Include="ExplorerWrapper.cs" />
     <Compile Include="InspectorWrapper.cs" />
+    <Compile Include="MAPIHelper.cs" />
     <Compile Include="OLViewWrapperBase.cs" />
     <Compile Include="OutlookRibbonManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">

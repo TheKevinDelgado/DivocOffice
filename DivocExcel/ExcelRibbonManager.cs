@@ -180,10 +180,10 @@ namespace DivocExcel
                 ItemMimeTypes.EXCEL_TEMPLATE
             };
 
-            string itemUrl = ThisAddIn.ContentManager.BrowseForItem(types, wnd: wnd);
-            if (!string.IsNullOrEmpty(itemUrl))
+            (string url, string _) = ThisAddIn.ContentManager.BrowseForItem(types, wnd: wnd);
+            if (!string.IsNullOrEmpty(url))
             {
-                _ = ThisAddIn.Instance.Application.Workbooks.Open(itemUrl);
+                _ = ThisAddIn.Instance.Application.Workbooks.Open(url);
             }
         }
 
