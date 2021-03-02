@@ -18,8 +18,11 @@
                 <Image>
                     <Image.Style>
                         <Style TargetType="Image">
-                            <Setter Property="Source" Value="Resources/folder.png"/>
+                            <Setter Property="Source" Value="Resources/folderWithChildren.png"/>
                             <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=Folder.ChildCount}" Value="0">
+                                    <Setter Property="Source" Value="Resources/folder.png"/>
+                                </DataTrigger>
                                 <DataTrigger Binding="{Binding Path=File.MimeType}" Value="{x:Static local:ItemMimeTypes.WORD_DOCUMENT}">
                                     <Setter Property="Source" Value="Resources/docx.png"/>
                                 </DataTrigger>

@@ -179,9 +179,9 @@ namespace DivocCommon
         /// </summary>
         /// <param name="fileTypes">List of <see cref="T:DivocCommon.ItemMimeTypes">ItemMimeTypes</see> to filter on.</param>
         /// <returns>WebDav URL for the selected item to open.</returns>
-        public string BrowseForItem(List<string> fileTypes = null, IntPtr wnd = default)
+        public (string url, string name) BrowseForItem(List<string> fileTypes = null, IntPtr wnd = default)
         {
-            string itemUrl = null;
+            (string url, string name) retVal = (string.Empty, string.Empty);
 
             DriveBrowser browseWnd = new DriveBrowser(this, fileTypes, wnd: wnd);
             
@@ -189,10 +189,11 @@ namespace DivocCommon
 
             if(dlgRes ?? false)
             {
-                itemUrl = browseWnd.SelectedItem.WebDavUrl;
+                retVal.url = browseWnd.SelectedItem.WebDavUrl;
+                retVal.name = browseWnd.SelectedItem.Name;
             }
 
-            return itemUrl;
+            return retVal;
         }
 
         /// <summary>

@@ -252,12 +252,24 @@ namespace DivocOutlook
             }
         }
 
+        /// <summary>
+        /// Insert attachments from Divoc into the new email.
+        /// </summary>
+        /// <notes>
+        /// Once we have the attachment added, we will want to tag it with a custom MAPI
+        /// property so that we can ignore it when sending, in the case of the user
+        /// selecting to upload and link attachments.
+        /// </notes>
+        /// <param name="email">Current email</param>
+        /// <param name="wnd">Parent window</param>
         private static void InsertAttachments(Outlook.MailItem email, IntPtr wnd = default)
         {
-            string itemUrl = ThisAddIn.ContentManager.BrowseForItem(wnd: wnd);
-            if (!string.IsNullOrEmpty(itemUrl))
+            (string url, string name) = ThisAddIn.ContentManager.BrowseForItem(wnd: wnd);
+            if (!string.IsNullOrEmpty(url))
             {
-                email.Attachments.Add(itemUrl);
+                Outlook.Attachment att = email.Attachments.Add(url, DisplayName: name); // Need to use DisplayName here because of spaces being escaped in the url
+
+                att.PropertyAccessor.SetProperty(MAPIHelper.Prop_String, MAPIHelper.Value_Attachment);
             }
         }
 

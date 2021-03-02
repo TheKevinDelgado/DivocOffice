@@ -166,10 +166,10 @@ namespace DivocPowerPoint
                 ItemMimeTypes.PPT_TEMPLATE
             };
 
-            string itemUrl = ThisAddIn.ContentManager.BrowseForItem(types, wnd);
-            if (!string.IsNullOrEmpty(itemUrl))
+            (string url, _) = ThisAddIn.ContentManager.BrowseForItem(types, wnd);
+            if (!string.IsNullOrEmpty(url))
             {
-                _ = ThisAddIn.Instance.Application.Presentations.Open(itemUrl);
+                _ = ThisAddIn.Instance.Application.Presentations.Open(url);
             }
         }
 
