@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,15 +20,20 @@ using DivocCommon.DataModel;
 namespace DivocCommon
 {
     /// <summary>
-    /// Event args for the DriveItemSelected event.
+    /// Converter for Folders with Children
     /// </summary>
-    public class DriveItemSelectedArgs : EventArgs
+    public class FolderWithChildrenConverter : IValueConverter
     {
         public DriveItem Item { get; private set; }
 
-        public DriveItemSelectedArgs(DriveItem item)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            Item = item;
+            throw new NotImplementedException();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -71,9 +77,9 @@ namespace DivocCommon
         }
 
         public DriveItem PreviousParentItem { get; private set; }
-        private ContentManager _contentMgr = null;
-        private List<string> _fileTypes = null;
-        private bool _saving = false; // are we looking for a location to put something in?
+        private readonly ContentManager _contentMgr = null;
+        private readonly List<string> _fileTypes = null;
+        private readonly bool _saving = false; // are we looking for a location to put something in?
 
         public string OpenLabel
         {
@@ -94,7 +100,7 @@ namespace DivocCommon
 
             if(wnd != null)
             {
-                var interopHelper = new System.Windows.Interop.WindowInteropHelper(this)
+                _ = new System.Windows.Interop.WindowInteropHelper(this)
                 {
                     Owner = wnd
                 };
