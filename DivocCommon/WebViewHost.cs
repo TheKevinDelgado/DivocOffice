@@ -23,11 +23,6 @@ namespace DivocCommon
         {
         }
 
-        private void WebViewCtrl_CoreWebView2Ready(object sender, EventArgs e)
-        {
-            Debug.WriteLine("webViewCtrl_CoreWebView2Ready");
-        }
-
         private void WebViewCtrl_NavigationStarting(object sender, CoreWebView2NavigationStartingEventArgs e)
         {
             Debug.WriteLine("webViewCtrl_NavigationStarting");
