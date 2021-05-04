@@ -97,6 +97,9 @@
     <Compile Include="SaveWithProgressForm.Designer.cs">
       <DependentUpon>SaveWithProgressForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ViewModel\DriveItemViewModel.cs" />
+    <Compile Include="ViewModel\FolderViewModel.cs" />
+    <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="WebBrowserHost.cs">
       <SubType>Form</SubType>
     </Compile>
