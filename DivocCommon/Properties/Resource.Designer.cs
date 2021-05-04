@@ -61,6 +61,43 @@ namespace DivocCommon.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon AppIcon {
+            get {
+                object obj = ResourceManager.GetObject("AppIcon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;HTML lang=&quot;en&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+        ///&lt;HEAD&gt;
+        ///&lt;/HEAD&gt;
+        ///&lt;BODY&gt;
+        ///    &lt;div style=&quot;margin-bottom: 25px;&quot;&gt;
+        ///        &lt;table style=&quot;background-color: cornsilk; width: 100%;&quot;&gt;
+        ///            &lt;tr style=&quot;background-color: darkblue; text-align: center;&quot;&gt;
+        ///                &lt;td&gt;Header&lt;/td&gt;
+        ///            &lt;/tr&gt;
+        ///
+        ///            {{webDavUrls}}
+        ///
+        ///            &lt;tr style=&quot;background-color: darkblue; text-align: center;&quot;&gt;
+        ///                &lt;td&gt;Footer&lt;/td&gt;
+        ///            &lt;/tr&gt;
+        ///        &lt;/table&gt;
+        ///    &lt;/div&gt;
+        ///&lt;/BODY&gt;
+        ///&lt;/H [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string emailLinksBlockTemplate {
+            get {
+                return ResourceManager.GetString("emailLinksBlockTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap InsertAttachmentsIcon {
@@ -152,6 +189,24 @@ namespace DivocCommon.Properties {
         internal static string SaveLabel {
             get {
                 return ResourceManager.GetString("SaveLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upload and Link.
+        /// </summary>
+        internal static string UploadAndLinkCaption {
+            get {
+                return ResourceManager.GetString("UploadAndLinkCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Would you like to upload the attachments to Divoc and send links instead?.
+        /// </summary>
+        internal static string UploadAndLinkPrompt {
+            get {
+                return ResourceManager.GetString("UploadAndLinkPrompt", resourceCulture);
             }
         }
     }

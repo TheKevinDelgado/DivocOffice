@@ -45,7 +45,7 @@ namespace TestShell
             this.listBoxCommonDialogs.Name = "listBoxCommonDialogs";
             this.listBoxCommonDialogs.Size = new System.Drawing.Size(438, 199);
             this.listBoxCommonDialogs.TabIndex = 0;
-            this.listBoxCommonDialogs.SelectedIndexChanged += new System.EventHandler(this.listBoxCommonDialogs_SelectedIndexChanged);
+            this.listBoxCommonDialogs.SelectedIndexChanged += new System.EventHandler(this.ListBoxCommonDialogs_SelectedIndexChanged);
             // 
             // groupBoxCommonDialogs
             // 
@@ -67,7 +67,7 @@ namespace TestShell
             this.buttonRunCommonDialog.TabIndex = 1;
             this.buttonRunCommonDialog.Text = "Run";
             this.buttonRunCommonDialog.UseVisualStyleBackColor = true;
-            this.buttonRunCommonDialog.Click += new System.EventHandler(this.buttonRunCommonDialog_Click);
+            this.buttonRunCommonDialog.Click += new System.EventHandler(this.ButtonRunCommonDialog_Click);
             // 
             // TestShell
             // 

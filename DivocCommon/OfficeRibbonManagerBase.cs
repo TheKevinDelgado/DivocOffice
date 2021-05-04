@@ -51,6 +51,8 @@ namespace DivocCommon
                 {
                     case RibbonIDs.DIVOC_GROUP:
                     case RibbonIDs.DIVOC_GROUP_INLINE:
+                    case RibbonIDs.BACKSTAGE_OPEN_TASK:
+                    case RibbonIDs.BACKSTAGE_OPEN_TASK_GROUP:
                         label = ResourceBroker.GetString(ResourceBroker.ResourceID.PRODUCT_NAME);
                         break;
 
@@ -72,6 +74,9 @@ namespace DivocCommon
                     case RibbonIDs.OPEN_DOCUMENT:
                     case RibbonIDs.OPEN_PRESENTATION:
                     case RibbonIDs.OPEN_WORKBOOK:
+                    case RibbonIDs.OPEN_DOCUMENT_BACKSTAGE:
+                    case RibbonIDs.OPEN_PRESENTATION_BACKSTAGE:
+                    case RibbonIDs.OPEN_WORKBOOK_BACKSTAGE:
                         label = ResourceBroker.GetString(ResourceBroker.ResourceID.OPEN_LABEL);
                         break;
                 }
@@ -96,6 +101,14 @@ namespace DivocCommon
 
                 switch (id)
                 {
+                    case RibbonIDs.DIVOC_GROUP:
+                    case RibbonIDs.DIVOC_GROUP_INLINE:
+                    case RibbonIDs.BACKSTAGE_OPEN_TASK:
+                        // When ribbon is squished, a group can be collapse into a single drop-down
+                        // In this case it will request an image for the group to display
+                        img = ResourceBroker.GetImage(ResourceBroker.ResourceID.PRODUCT_IMAGE);
+                        break;
+
                     case RibbonIDs.SAVE_MAIL:
                     case RibbonIDs.SAVE_DOCUMENT:
                     case RibbonIDs.SAVE_PRESENTATION:
@@ -114,6 +127,9 @@ namespace DivocCommon
                     case RibbonIDs.OPEN_DOCUMENT:
                     case RibbonIDs.OPEN_PRESENTATION:
                     case RibbonIDs.OPEN_WORKBOOK:
+                    case RibbonIDs.OPEN_DOCUMENT_BACKSTAGE:
+                    case RibbonIDs.OPEN_PRESENTATION_BACKSTAGE:
+                    case RibbonIDs.OPEN_WORKBOOK_BACKSTAGE:
                         img = ResourceBroker.GetImage(ResourceBroker.ResourceID.OPEN_IMAGE);
                         break;
                 }
@@ -149,6 +165,35 @@ namespace DivocCommon
 
             return tip;
         }
+
+        public string OnGetHelperText(Office.IRibbonControl control)
+        {
+            string helperText = string.Empty;
+
+            try
+            {
+                LogManager.LogMethod(string.Format("Ribbon Control Id: {0}", control.Id));
+
+                string id = control.Id;
+
+                switch (id)
+                {
+                    case RibbonIDs.BACKSTAGE_OPEN_TASK_GROUP:
+                        helperText = ResourceBroker.GetString(ResourceBroker.ResourceID.PRODUCT_NAME);  // TODO: Need something better
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogManager.LogException(ex);
+            }
+
+            return helperText;
+        }
+
         public virtual bool OnGetEnabled(Office.IRibbonControl control)
         {
             LogManager.LogMethod(string.Format("Unhandled Ribbon Control Context. Id: {0}", control.Id));

@@ -14,7 +14,8 @@ namespace DivocPowerPoint
     public partial class ThisAddIn
     {
         static PowerPointRibbonManager ribbonManager = null;
-        AuthenticationManager auth = new AuthenticationManager();
+        public static ContentManager ContentManager { get; private set; }
+        public static ThisAddIn Instance { get; private set; }
 
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
@@ -24,21 +25,31 @@ namespace DivocPowerPoint
             PowerPoint.EApplication_Event events = (PowerPoint.EApplication_Event)this.Application;
             events.NewPresentation += Events_NewPresentation;
             events.PresentationOpen += Events_PresentationOpen;
+            events.PresentationClose += Events_PresentationClose;
+
+            ContentManager = new ContentManager();
+            Instance = this;
         }
 
-        private async void Events_PresentationOpen(PowerPoint.Presentation Pres)
+        public static void InvalidateRibbon()
         {
-            await DoAuthenticate();
+            if (ribbonManager != null && ThisAddIn.ribbonManager.Ribbon != null)
+                ribbonManager.Ribbon.Invalidate();
         }
 
-        private async void Events_NewPresentation(PowerPoint.Presentation Pres)
+        private void Events_PresentationOpen(PowerPoint.Presentation Pres)
         {
-            await DoAuthenticate();
+            InvalidateRibbon();
         }
 
-        private async Task<bool> DoAuthenticate()
+        private void Events_NewPresentation(PowerPoint.Presentation Pres)
         {
-            return await auth.Authenticate(new IntPtr(this.Application.ActiveWindow.HWND));
+            InvalidateRibbon();
+        }
+
+        private void Events_PresentationClose(PowerPoint.Presentation Pres)
+        {
+            InvalidateRibbon();
         }
 
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)

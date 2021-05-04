@@ -23,27 +23,22 @@ namespace DivocCommon
         {
         }
 
-        private void webViewCtrl_CoreWebView2Ready(object sender, EventArgs e)
-        {
-            Debug.WriteLine("webViewCtrl_CoreWebView2Ready");
-        }
-
-        private void webViewCtrl_NavigationStarting(object sender, CoreWebView2NavigationStartingEventArgs e)
+        private void WebViewCtrl_NavigationStarting(object sender, CoreWebView2NavigationStartingEventArgs e)
         {
             Debug.WriteLine("webViewCtrl_NavigationStarting");
         }
 
-        private void webViewCtrl_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
+        private void WebViewCtrl_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
         {
             Debug.WriteLine("webViewCtrl_NavigationCompleted");
         }
 
-        private void webViewCtrl_ContentLoading(object sender, CoreWebView2ContentLoadingEventArgs e)
+        private void WebViewCtrl_ContentLoading(object sender, CoreWebView2ContentLoadingEventArgs e)
         {
             Debug.WriteLine("webViewCtrl_ContentLoading");
         }
 
-        private void webViewCtrl_SourceChanged(object sender, CoreWebView2SourceChangedEventArgs e)
+        private void WebViewCtrl_SourceChanged(object sender, CoreWebView2SourceChangedEventArgs e)
         {
             Debug.WriteLine("webViewCtrl_SourceChanged");
         }

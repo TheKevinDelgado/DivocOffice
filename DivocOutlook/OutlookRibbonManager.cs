@@ -45,7 +45,7 @@ namespace DivocOutlook
         {
             LogManager.LogMethod(string.Format("Ribbon Id: {0}", ribbonID));
 
-            string ribbonUI = null;
+            string ribbonUI;
 
             switch(ribbonID)
             {
@@ -112,6 +112,15 @@ namespace DivocOutlook
                     switch (control.Id)
                     {
                         case RibbonIDs.SAVE_MAIL:
+                            SaveEmails(expl, ExplorerWrapper.GetHandleForExplorer(expl));
+                            break;
+
+                        case RibbonIDs.SAVE_ATTACHMENTS:
+                            SaveAttachments(expl, ExplorerWrapper.GetHandleForExplorer(expl));
+                            break;
+
+                        case RibbonIDs.INSERT_ATTACHMENTS:
+                            InsertAttachments(expl.ActiveInlineResponse, ExplorerWrapper.GetHandleForExplorer(expl));
                             break;
                     }
                 }
@@ -122,7 +131,71 @@ namespace DivocOutlook
             }
         }
 
-        private void HandleInspectorAction(Office.IRibbonControl control)
+        private static void SaveEmails(Outlook.Explorer expl, IntPtr wnd = default)
+        {
+            // * Get the selection of emails
+            // * Save them to user's temp dir
+            // * Pass list of file paths to the contentmanager for upload
+            // * Content manager will delete the temps
+            if (expl.Selection.Count > 0 && expl.Selection[1] is Outlook.MailItem)
+            {
+                string parentId = ThisAddIn.ContentManager.BrowseForLocation(wnd);
+
+                if (!string.IsNullOrEmpty(parentId))
+                {
+                    string userTempPath = Path.GetTempPath();
+                    List<KeyValuePair<string, string>> fileInfoList = new List<KeyValuePair<string, string>>();
+
+                    foreach (Outlook.MailItem item in expl.Selection)
+                    {
+                        string fileName = item.Subject + ".msg";
+
+                        // Possibly have invalid characters so fix that...
+                        fileName = Helpers.CleanFilename(fileName);
+
+                        string filePath = userTempPath + fileName;
+                        item.SaveAs(filePath, Outlook.OlSaveAsType.olMSGUnicode);
+                        fileInfoList.Add(new KeyValuePair<string, string>(fileName, filePath));
+                    }
+
+                    ThisAddIn.ContentManager.SaveWithProgress(fileInfoList, parentId);
+                }
+            }
+        }
+
+        private static void SaveAttachments(Outlook.Explorer expl, IntPtr wnd = default)
+        {
+            // * Get the selection of emails
+            // * Get the attachments from the emails
+            // * Save them to user's temp dir
+            // * Pass list of file paths to the contentmanager for upload
+            // * Content manager will delete the temps
+            if (expl.Selection.Count > 0 && expl.Selection[1] is Outlook.MailItem)
+            {
+                string parentId = ThisAddIn.ContentManager.BrowseForLocation(wnd);
+
+                if (!string.IsNullOrEmpty(parentId))
+                {
+                    string userTempPath = Path.GetTempPath();
+                    List<KeyValuePair<string, string>> fileInfoList = new List<KeyValuePair<string, string>>();
+
+                    foreach (Outlook.MailItem item in expl.Selection)
+                    {
+                        foreach (Outlook.Attachment attach in item.Attachments)
+                        {
+                            string fileName = attach.FileName;
+                            string filePath = userTempPath + fileName;
+                            attach.SaveAsFile(filePath);
+                            fileInfoList.Add(new KeyValuePair<string, string>(fileName, filePath));
+                        }
+                    }
+
+                    ThisAddIn.ContentManager.SaveWithProgress(fileInfoList, parentId);
+                }
+            }
+        }
+
+        private static void HandleInspectorAction(Office.IRibbonControl control)
         {
             try
             {
@@ -132,22 +205,16 @@ namespace DivocOutlook
 
                 if(insp != null)
                 {
-                    switch(control.Id)
+                    Outlook.MailItem mail = insp.CurrentItem as Outlook.MailItem;
+
+                    switch (control.Id)
                     {
                         case RibbonIDs.INSERT_ATTACHMENTS:
-                            Outlook.MailItem mail = insp.CurrentItem as Outlook.MailItem;
+                            InsertAttachments(mail, InspectorWrapper.GetHandleForInspector(insp));
+                            break;
 
-                            if (mail != null)
-                            {
-                                if (mail.Sent)
-                                {
-                                    // Inspector is in read mode
-                                }
-                                else
-                                {
-                                    // Inspector is in compose mode
-                                }
-                            }
+                        case RibbonIDs.SAVE_ATTACHMENTS:
+                            SaveAttachments(mail, InspectorWrapper.GetHandleForInspector(insp));
                             break;
                     }
                 }
@@ -155,6 +222,54 @@ namespace DivocOutlook
             catch (Exception ex)
             {
                 LogManager.LogException(ex);
+            }
+        }
+
+        private static void SaveAttachments(Outlook.MailItem email, IntPtr wnd = default)
+        {
+            // Save the email's attachments. May need to check each attachment
+            // and make sure it isn't a signature image or such. Don't save those.
+
+            if(email.Attachments.Count > 0) // Should be filtered via enablement but just in case
+            {
+                string parentId = ThisAddIn.ContentManager.BrowseForLocation(wnd);
+
+                if (!string.IsNullOrEmpty(parentId))
+                {
+                    string userTempPath = Path.GetTempPath();
+                    List<KeyValuePair<string, string>> fileInfoList = new List<KeyValuePair<string, string>>();
+
+                    foreach (Outlook.Attachment attach in email.Attachments)
+                    {
+                        string fileName = attach.FileName;
+                        string filePath = userTempPath + fileName;
+                        attach.SaveAsFile(filePath);
+                        fileInfoList.Add(new KeyValuePair<string, string>(fileName, filePath));
+                    }
+
+                    ThisAddIn.ContentManager.SaveWithProgress(fileInfoList, parentId);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Insert attachments from Divoc into the new email.
+        /// </summary>
+        /// <notes>
+        /// Once we have the attachment added, we will want to tag it with a custom MAPI
+        /// property so that we can ignore it when sending, in the case of the user
+        /// selecting to upload and link attachments.
+        /// </notes>
+        /// <param name="email">Current email</param>
+        /// <param name="wnd">Parent window</param>
+        private static void InsertAttachments(Outlook.MailItem email, IntPtr wnd = default)
+        {
+            (string url, string name) = ThisAddIn.ContentManager.BrowseForItem(wnd: wnd);
+            if (!string.IsNullOrEmpty(url))
+            {
+                Outlook.Attachment att = email.Attachments.Add(url, DisplayName: name); // Need to use DisplayName here because of spaces being escaped in the url
+
+                att.PropertyAccessor.SetProperty(MAPIHelper.Prop_String, MAPIHelper.Value_Attachment);
             }
         }
 
@@ -189,7 +304,7 @@ namespace DivocOutlook
             return enabled;
         }
 
-        private bool HandleExplorerEnablement(Office.IRibbonControl control)
+        private static bool HandleExplorerEnablement(Office.IRibbonControl control)
         {
             bool enabled = false;
 
@@ -239,7 +354,7 @@ namespace DivocOutlook
             return enabled;
         }
 
-        private bool HandleInspectorEnablement(Office.IRibbonControl control)
+        private static bool HandleInspectorEnablement(Office.IRibbonControl control)
         {
             bool enabled = false;
 

@@ -9,31 +9,51 @@ namespace DivocWord
     public partial class ThisAddIn
     {
         static WordRibbonManager ribbonManager = null;
-        AuthenticationManager auth = new AuthenticationManager();
+        public static ContentManager ContentManager { get; private set; }
+        public static ThisAddIn Instance { get; private set; }
+
+        private Word.ApplicationEvents4_Event _AppEvents = null;
 
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
             LogManager.LogMethod();
 
             // Set up Application event handlers...
-            Word.ApplicationEvents4_Event events = (Word.ApplicationEvents4_Event)this.Application;
-            events.DocumentOpen += Events_DocumentOpen;
-            events.NewDocument += Events_NewDocument;
+            _AppEvents = (Word.ApplicationEvents4_Event)this.Application;
+            _AppEvents.DocumentOpen += Events_DocumentOpen;
+            _AppEvents.NewDocument += Events_NewDocument;
+
+            ContentManager = new ContentManager();
+            Instance = this;
         }
 
-        private async void Events_NewDocument(Word.Document Doc)
+        public static void InvalidateRibbon()
         {
-            await DoAuthenticate();
+            if (ribbonManager != null && ThisAddIn.ribbonManager.Ribbon != null)
+                ribbonManager.Ribbon.Invalidate();
         }
 
-        private async void Events_DocumentOpen(Word.Document Doc)
+        private void Events_NewDocument(Word.Document Doc)
         {
-            await DoAuthenticate();
+            Word.DocumentEvents2_Event docEvents = (Word.DocumentEvents2_Event)Doc;
+
+            docEvents.Close += Events_Close;
+
+            InvalidateRibbon();
         }
 
-        private async Task<bool> DoAuthenticate()
+        private void Events_Close()
         {
-            return await auth.Authenticate(new IntPtr(this.Application.ActiveWindow.Hwnd));
+            InvalidateRibbon();
+        }
+
+        private void Events_DocumentOpen(Word.Document Doc)
+        {
+            Word.DocumentEvents2_Event docEvents = (Word.DocumentEvents2_Event)Doc;
+
+            docEvents.Close += Events_Close;
+
+            InvalidateRibbon();
         }
 
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
