@@ -97,6 +97,7 @@
     <Compile Include="SaveWithProgressForm.Designer.cs">
       <DependentUpon>SaveWithProgressForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ViewWrapperBase.cs" />
     <Compile Include="WebBrowserHost.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -109,6 +110,7 @@
     <Compile Include="WebViewHost.Designer.cs">
       <DependentUpon>WebViewHost.cs</DependentUpon>
     </Compile>
+    <Compile Include="WindowHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resource.resx">

@@ -13,6 +13,8 @@ namespace DivocExcel
 {
     public partial class ThisAddIn
     {
+        Dictionary<Guid, ViewWrapperBase> _WrappedWorkbooks;
+
         static ExcelRibbonManager ribbonManager = null;
         public static ContentManager ContentManager { get; private set; }
         public static ThisAddIn Instance { get; private set; }
@@ -20,6 +22,14 @@ namespace DivocExcel
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
             LogManager.LogMethod();
+
+            // Wrap any existing workbooks...
+            _WrappedWorkbooks = new Dictionary<Guid, ViewWrapperBase>();
+
+            foreach (Excel.Workbook workbook in Application.Workbooks)
+            {
+                WrapWorkbook(workbook);
+            }
 
             // Set up Application event handlers...
             Excel.AppEvents_Event events = (Excel.AppEvents_Event)this.Application;
@@ -31,6 +41,22 @@ namespace DivocExcel
             Instance = this;
         }
 
+        void WrapWorkbook(Excel.Workbook workbook)
+        {
+
+            WorkbookWrapper wrapper = new WorkbookWrapper(workbook);
+
+            wrapper.Closed += new ViewWrapperClosedDelegate(WrappedWorkbook_Closed);
+
+            _WrappedWorkbooks[wrapper.Id] = wrapper;
+
+        }
+
+        void WrappedWorkbook_Closed(Guid id)
+        {
+            _WrappedWorkbooks.Remove(id);
+        }
+
         public static void InvalidateRibbon()
         {
             if (ribbonManager != null && ThisAddIn.ribbonManager.Ribbon != null)
@@ -40,11 +66,13 @@ namespace DivocExcel
         private void Events_WorkbookOpen(Excel.Workbook Wb)
         {
             InvalidateRibbon();
+            WrapWorkbook(Wb);
         }
 
         private void Events_NewWorkbook(Excel.Workbook Wb)
         {
             InvalidateRibbon();
+            WrapWorkbook(Wb);
         }
 
         private void Events_WorkbookBeforeClose(Excel.Workbook Wb, ref bool Cancel)
